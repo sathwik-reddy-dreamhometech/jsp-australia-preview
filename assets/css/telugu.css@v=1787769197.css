@@ -1,0 +1,113 @@
+/* ==========================================================================
+   Telugu typography
+
+   Telugu glyphs sit taller than Latin at the same font-size. Without a
+   line-height bump they collide with their own descenders — most visibly
+   on Android Chrome, which is where most of this audience reads.
+
+   Two selectors carry the work:
+     html.lang-te  — the whole page is being read in Telugu
+     [lang="te"]   — one element is Telugu inside an English page, which is
+                     what t_lang() emits when a translation is missing
+   ========================================================================== */
+
+html.lang-te body,
+[lang="te"],
+.te {
+  font-family: var(--ff-te);
+  line-height: 1.85;
+}
+
+/* 1.05em rather than a fixed px value, so it compounds with the clamp()
+   sizes instead of fighting them. Headings are excluded — they set their
+   own tighter leading below. */
+html.lang-te body,
+[lang="te"]:not(h1):not(h2):not(h3):not(h4):not(.brand-text strong) {
+  font-size: 1.05em;
+}
+
+/* Poppins has no Telugu coverage, so headings fall through to Noto Sans
+   Telugu. Uppercase is meaningless in Telugu script and letter-spacing
+   actively breaks conjuncts, so both are removed. */
+html.lang-te h1,
+html.lang-te h2,
+html.lang-te h3,
+html.lang-te h4,
+html.lang-te .btn,
+html.lang-te .nav a,
+html.lang-te .has-sub > button,
+html.lang-te .btn-cta,
+h1[lang="te"], h2[lang="te"], h3[lang="te"], h4[lang="te"],
+[lang="te"].card h3,
+[lang="te"].ideal-card h3 {
+  font-family: var(--ff-te);
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.45;
+}
+
+/* Small caps-y labels lose their tracking in Telugu — it shreds conjuncts */
+html.lang-te .eyebrow,
+html.lang-te .card .meta,
+html.lang-te .member .role,
+html.lang-te .stat span,
+html.lang-te .leader small,
+html.lang-te .site-footer h4,
+html.lang-te .ann .date span,
+html.lang-te .datechip span,
+html.lang-te .brand-text span {
+  text-transform: none;
+  letter-spacing: .02em;
+}
+
+/* Numerals stay in Poppins: they are Latin digits either way and Poppins
+   sets them much more tightly than Noto Sans Telugu. */
+html.lang-te .ann .date b,
+html.lang-te .datechip b,
+html.lang-te .stat b,
+html.lang-te .ideal-card b,
+html.lang-te .ideal-row .num {
+  font-family: var(--ff);
+}
+
+/* Body copy and long-form prose need the taller leading too */
+html.lang-te .prose,
+html.lang-te .prose p,
+html.lang-te .prose li,
+html.lang-te .lede,
+html.lang-te .card p,
+html.lang-te .ann p,
+html.lang-te .checkbox label,
+[lang="te"].prose,
+[lang="te"].lede {
+  line-height: 1.85;
+}
+
+/* Stacked headings need a little more room beneath for descenders */
+html.lang-te h1,
+html.lang-te h2 {
+  padding-bottom: .08em;
+}
+
+/* The hero headline is Telugu in both languages — give it its own leading
+   rather than inheriting the tight Latin value */
+.hero h1[lang="te"] {
+  font-family: var(--ff-te);
+  line-height: 1.35;
+}
+
+/* Form controls inherit the Telugu face so typed input matches its label */
+html.lang-te .input,
+html.lang-te .select,
+html.lang-te .textarea {
+  font-family: var(--ff-te);
+  line-height: 1.7;
+}
+
+/* Pill buttons need a touch more vertical room so tall glyphs are not clipped */
+html.lang-te .btn { padding-block: 14px; }
+html.lang-te .btn--sm { padding-block: 10px; }
+
+/* The switcher always shows the other language in its own script */
+.lang-switch[lang="te"] { font-family: var(--ff-te); }
