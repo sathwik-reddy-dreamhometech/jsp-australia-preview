@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>జనసేన ఆస్ట్రేలియా — ప్రకటనలు</title>
+    <title>Janasena Australia — Announcements</title>
     <link>http://localhost/announcements.php</link>
-    <description>జనసేన ఆస్ట్రేలియా నుండి వార్తలు, సమాచారం.</description>
-    <language>te-IN</language>
-    <lastBuildDate>Thu, 27 Aug 2026 19:11:12 +1000</lastBuildDate>
+    <description>News and notices from Janasena Australia.</description>
+    <language>en-AU</language>
+    <lastBuildDate>Thu, 27 Aug 2026 19:12:51 +1000</lastBuildDate>
     <atom:link href="http://localhost/feed.php" rel="self" type="application/rss+xml"/>
     <item>
-      <title>మెల్‌బోర్న్</title>
-      <link>http://localhost/announcement.php?slug=jk&amp;lang=te</link>
-      <guid isPermaLink="true">http://localhost/announcement.php?slug=jk&amp;lang=te</guid>
+      <title>jk</title>
+      <link>http://localhost/announcement.php?slug=jk</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=jk</guid>
       <pubDate>Tue, 25 Aug 2026 20:07:00 +1000</pubDate>
-      <description>n</description>
+      <description>mj</description>
     </item>
     <item>
-      <title>మెల్‌బోర్న</title>
-      <link>http://localhost/announcement.php?slug=wn&amp;lang=te</link>
-      <guid isPermaLink="true">http://localhost/announcement.php?slug=wn&amp;lang=te</guid>
+      <title>wn</title>
+      <link>http://localhost/announcement.php?slug=wn</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=wn</guid>
       <pubDate>Tue, 25 Aug 2026 17:16:00 +1000</pubDate>
-      <description>wq</description>
+      <description>qw</description>
     </item>
     <item>
-      <title>మెల్‌బోర్న్ మహానాడు 2026</title>
-      <link>http://localhost/announcement.php?slug=demo-mahanadu-2026&amp;lang=te</link>
-      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-mahanadu-2026&amp;lang=te</guid>
+      <title>Melbourne Mahanadu 2026 — save the date</title>
+      <link>http://localhost/announcement.php?slug=demo-mahanadu-2026</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-mahanadu-2026</guid>
       <pubDate>Fri, 14 Aug 2026 20:08:00 +1000</pubDate>
-      <description>సంస్కృతి, ఐక్యత, సేవలను పురస్కరించుకుని జరిగే మహా సమావేశానికి తెలుగు సమాజాన్ని ఆహ్వానిస్తున్నాము.</description>
+      <description>Janasena Australia invites the Telugu community to a grand gathering celebrating culture, unity and service.</description>
     </item>
     <item>
-      <title>సభ్యత్వ నమోదు ప్రారంభం</title>
-      <link>http://localhost/announcement.php?slug=demo-membership-open&amp;lang=te</link>
-      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-membership-open&amp;lang=te</guid>
+      <title>Membership enrolments now open</title>
+      <link>http://localhost/announcement.php?slug=demo-membership-open</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-membership-open</guid>
       <pubDate>Sun, 02 Aug 2026 20:08:40 +1000</pubDate>
-      <description>2026–27 సంవత్సరానికి కొత్త సభ్యత్వ నమోదు ప్రారంభమైంది.</description>
+      <description>New membership enrolments are open for the 2026–27 year. Join a growing network of Telugu families across Australia.</description>
     </item>
     <item>
-      <title>శీతాకాల సేవా కార్యక్రమం</title>
-      <link>http://localhost/announcement.php?slug=demo-winter-appeal&amp;lang=te</link>
-      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-winter-appeal&amp;lang=te</guid>
+      <title>Winter charity drive raises $8,400</title>
+      <link>http://localhost/announcement.php?slug=demo-winter-appeal</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-winter-appeal</guid>
       <pubDate>Wed, 15 Jul 2026 20:08:40 +1000</pubDate>
-      <description>మా శీతాకాల విరాళ కార్యక్రమాన్ని విజయవంతం చేసిన ప్రతి ఒక్కరికీ ధన్యవాదాలు.</description>
+      <description>Thank you to every volunteer and donor who made our winter appeal for local shelters a success.</description>
     </item>
     <item>
-      <title>నూతన కార్యవర్గం ఎన్నిక</title>
-      <link>http://localhost/announcement.php?slug=demo-new-committee&amp;lang=te</link>
-      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-new-committee&amp;lang=te</guid>
+      <title>New executive committee elected</title>
+      <link>http://localhost/announcement.php?slug=demo-new-committee</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-new-committee</guid>
       <pubDate>Thu, 25 Jun 2026 20:08:40 +1000</pubDate>
       <description>The organisation proudly announces the appointment of its new executive committee for the coming term.</description>
     </item>

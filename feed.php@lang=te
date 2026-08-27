@@ -5,7 +5,7 @@
     <link>http://localhost/announcements.php</link>
     <description>జనసేన ఆస్ట్రేలియా నుండి వార్తలు, సమాచారం.</description>
     <language>te-IN</language>
-    <lastBuildDate>Thu, 27 Aug 2026 19:11:12 +1000</lastBuildDate>
+    <lastBuildDate>Thu, 27 Aug 2026 19:12:52 +1000</lastBuildDate>
     <atom:link href="http://localhost/feed.php" rel="self" type="application/rss+xml"/>
     <item>
       <title>మెల్‌బోర్న్</title>
