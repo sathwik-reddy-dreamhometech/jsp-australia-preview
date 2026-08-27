@@ -1,11 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>జనసేన ఆస్ట్రేలియా — ప్రకటనలు</title>
+    <title>à°œà°¨à°¸à±‡à°¨ à°†à°¸à±à°Ÿà±à°°à±‡à°²à°¿à°¯à°¾ — ప్రకటనలు</title>
     <link>http://localhost/announcements.php</link>
     <description>జనసేన ఆస్ట్రేలియా నుండి వార్తలు, సమాచారం.</description>
     <language>te-IN</language>
-    <lastBuildDate>Thu, 27 Aug 2026 05:00:16 +1000</lastBuildDate>
+    <lastBuildDate>Thu, 27 Aug 2026 19:05:06 +1000</lastBuildDate>
     <atom:link href="http://localhost/feed.php" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>à°®à±†à°²à±â€Œà°¬à±‹à°°à±à°¨à±</title>
+      <link>http://localhost/announcement.php?slug=jk&amp;lang=te</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=jk&amp;lang=te</guid>
+      <pubDate>Tue, 25 Aug 2026 20:07:00 +1000</pubDate>
+      <description>n</description>
+    </item>
+    <item>
+      <title>à°®à±†à°²à±â€Œà°¬à±‹à°°à±à°¨</title>
+      <link>http://localhost/announcement.php?slug=wn&amp;lang=te</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=wn&amp;lang=te</guid>
+      <pubDate>Tue, 25 Aug 2026 17:16:00 +1000</pubDate>
+      <description>wq</description>
+    </item>
+    <item>
+      <title>à°®à±†à°²à±â€Œà°¬à±‹à°°à±à°¨à± à°®à°¹à°¾à°¨à°¾à°¡à± 2026</title>
+      <link>http://localhost/announcement.php?slug=demo-mahanadu-2026&amp;lang=te</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-mahanadu-2026&amp;lang=te</guid>
+      <pubDate>Fri, 14 Aug 2026 20:08:00 +1000</pubDate>
+      <description>à°¸à°‚à°¸à±à°•à±ƒà°¤à°¿, à°à°•à±à°¯à°¤, à°¸à±‡à°µà°²à°¨à± à°ªà±à°°à°¸à±à°•à°°à°¿à°‚à°šà±à°•à±à°¨à°¿ à°œà°°à°¿à°—à±‡ à°®à°¹à°¾ à°¸à°®à°¾à°µà±‡à°¶à°¾à°¨à°¿à°•à°¿ à°¤à±†à°²à±à°—à± à°¸à°®à°¾à°œà°¾à°¨à±à°¨à°¿ à°†à°¹à±à°µà°¾à°¨à°¿à°¸à±à°¤à±à°¨à±à°¨à°¾à°®à±.</description>
+    </item>
+    <item>
+      <title>à°¸à°­à±à°¯à°¤à±à°µ à°¨à°®à±‹à°¦à± à°ªà±à°°à°¾à°°à°‚à°­à°‚</title>
+      <link>http://localhost/announcement.php?slug=demo-membership-open&amp;lang=te</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-membership-open&amp;lang=te</guid>
+      <pubDate>Sun, 02 Aug 2026 20:08:40 +1000</pubDate>
+      <description>2026â€“27 à°¸à°‚à°µà°¤à±à°¸à°°à°¾à°¨à°¿à°•à°¿ à°•à±Šà°¤à±à°¤ à°¸à°­à±à°¯à°¤à±à°µ à°¨à°®à±‹à°¦à± à°ªà±à°°à°¾à°°à°‚à°­à°®à±ˆà°‚à°¦à°¿.</description>
+    </item>
+    <item>
+      <title>à°¶à±€à°¤à°¾à°•à°¾à°² à°¸à±‡à°µà°¾ à°•à°¾à°°à±à°¯à°•à±à°°à°®à°‚</title>
+      <link>http://localhost/announcement.php?slug=demo-winter-appeal&amp;lang=te</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-winter-appeal&amp;lang=te</guid>
+      <pubDate>Wed, 15 Jul 2026 20:08:40 +1000</pubDate>
+      <description>à°®à°¾ à°¶à±€à°¤à°¾à°•à°¾à°² à°µà°¿à°°à°¾à°³ à°•à°¾à°°à±à°¯à°•à±à°°à°®à°¾à°¨à±à°¨à°¿ à°µà°¿à°œà°¯à°µà°‚à°¤à°‚ à°šà±‡à°¸à°¿à°¨ à°ªà±à°°à°¤à°¿ à°’à°•à±à°•à°°à°¿à°•à±€ à°§à°¨à±à°¯à°µà°¾à°¦à°¾à°²à±.</description>
+    </item>
+    <item>
+      <title>à°¨à±‚à°¤à°¨ à°•à°¾à°°à±à°¯à°µà°°à±à°—à°‚ à°Žà°¨à±à°¨à°¿à°•</title>
+      <link>http://localhost/announcement.php?slug=demo-new-committee&amp;lang=te</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-new-committee&amp;lang=te</guid>
+      <pubDate>Thu, 25 Jun 2026 20:08:40 +1000</pubDate>
+      <description>The organisation proudly announces the appointment of its new executive committee for the coming term.</description>
+    </item>
   </channel>
 </rss>

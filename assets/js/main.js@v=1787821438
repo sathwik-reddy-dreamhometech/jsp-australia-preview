@@ -1,0 +1,473 @@
+/* =====================================================================
+   Site behaviour. Vanilla, no dependencies, no inline handlers — the CSP
+   in app/bootstrap.php blocks inline script.
+   ===================================================================== */
+(function () {
+  'use strict';
+
+  /* --- Gallery dropdown in the masthead -------------------------------- */
+  function initSubmenus() {
+    var wraps = document.querySelectorAll('[data-sub]');
+
+    wraps.forEach(function (wrap) {
+      var button = wrap.querySelector('button');
+      if (!button) return;
+
+      button.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        var open = wrap.dataset.open === 'true';
+        wrap.dataset.open = open ? 'false' : 'true';
+        button.setAttribute('aria-expanded', open ? 'false' : 'true');
+      });
+    });
+
+    // Click outside or press Escape closes any open submenu.
+    document.addEventListener('click', function () {
+      wraps.forEach(function (wrap) {
+        wrap.dataset.open = 'false';
+        var b = wrap.querySelector('button');
+        if (b) b.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'Escape') return;
+      wraps.forEach(function (wrap) {
+        if (wrap.dataset.open !== 'true') return;
+        wrap.dataset.open = 'false';
+        var b = wrap.querySelector('button');
+        if (b) { b.setAttribute('aria-expanded', 'false'); b.focus(); }
+      });
+    });
+  }
+
+  /* --- Mobile drawer ---------------------------------------------------- */
+  function initBurger() {
+    var burger = document.querySelector('[data-burger]');
+    if (!burger) return;
+
+    burger.addEventListener('click', function () {
+      var open = document.body.dataset.menu === 'open';
+      document.body.dataset.menu = open ? '' : 'open';
+      burger.setAttribute('aria-expanded', open ? 'false' : 'true');
+    });
+
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape' && document.body.dataset.menu === 'open') {
+        document.body.dataset.menu = '';
+        burger.setAttribute('aria-expanded', 'false');
+        burger.focus();
+      }
+    });
+  }
+
+  /* --- Hero slideshow ---------------------------------------------------
+     Cross-fades the background images listed in data-hero. Honours
+     prefers-reduced-motion by showing only the first slide, and pauses
+     while the tab is hidden.                                             */
+  function initHero() {
+    var hero = document.querySelector('[data-hero]');
+    if (!hero) return;
+
+    var slides;
+    try {
+      slides = JSON.parse(hero.dataset.hero);
+    } catch (err) {
+      return;
+    }
+    if (!Array.isArray(slides) || !slides.length) return;
+
+    hero.style.backgroundImage = 'url("' + slides[0] + '")';
+
+    var dots = hero.querySelectorAll('.hero-dots button');
+    if (slides.length < 2) return;
+
+    // Preload so the first transition does not flash the fallback colour.
+    slides.slice(1).forEach(function (src) { new Image().src = src; });
+
+    var index = 0;
+    var timer = null;
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function go(n) {
+      index = (n + slides.length) % slides.length;
+      hero.style.backgroundImage = 'url("' + slides[index] + '")';
+      dots.forEach(function (dot, k) {
+        dot.setAttribute('aria-selected', k === index ? 'true' : 'false');
+      });
+    }
+
+    function start() {
+      if (still || timer) return;
+      timer = window.setInterval(function () { go(index + 1); }, 6500);
+    }
+
+    function stop() {
+      window.clearInterval(timer);
+      timer = null;
+    }
+
+    dots.forEach(function (dot, k) {
+      dot.addEventListener('click', function () { go(k); stop(); start(); });
+    });
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stop(); else start();
+    });
+
+    go(0);
+    start();
+  }
+
+  /* --- YouTube click-to-load --------------------------------------------
+     No request reaches YouTube until the visitor asks for the video.     */
+  function initVideoFacades() {
+    document.querySelectorAll('.video-embed__facade').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var wrap = btn.closest('.video-embed');
+        var id   = btn.getAttribute('data-youtube-id');
+        if (!wrap || !id || !/^[A-Za-z0-9_-]{11}$/.test(id)) return;
+
+        var frame = document.createElement('iframe');
+        frame.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+        frame.title = btn.getAttribute('data-title') || 'Video';
+        frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture';
+        frame.setAttribute('allowfullscreen', '');
+        frame.setAttribute('loading', 'lazy');
+
+        wrap.innerHTML = '';
+        wrap.appendChild(frame);
+      });
+    });
+  }
+
+  /* --- External links: rel="noopener" on anything leaving the site ------ */
+  function hardenExternalLinks() {
+    var host = window.location.hostname;
+    document.querySelectorAll('a[target="_blank"]').forEach(function (a) {
+      var rel = (a.getAttribute('rel') || '').split(/\s+/).filter(Boolean);
+      if (rel.indexOf('noopener') === -1) rel.push('noopener');
+      if (a.hostname && a.hostname !== host && rel.indexOf('noreferrer') === -1) {
+        rel.push('noreferrer');
+      }
+      a.setAttribute('rel', rel.join(' '));
+    });
+  }
+
+  /* --- Double-submit guard ---------------------------------------------
+     The server-side rate limit is the real protection; this stops honest
+     double-taps.                                                         */
+  function guardForms() {
+    document.querySelectorAll('form[data-guard]').forEach(function (form) {
+      form.addEventListener('submit', function () {
+        var btn = form.querySelector('[type="submit"]');
+        if (!btn) return;
+        window.setTimeout(function () {
+          btn.disabled = true;
+          btn.setAttribute('aria-busy', 'true');
+        }, 0);
+      });
+    });
+  }
+
+  /* --- Translated validation messages -----------------------------------
+     The browser's own messages are not translated. Where a field carries
+     data-msg, use it instead — the server re-validates regardless.       */
+  function initValidationMessages() {
+    document.querySelectorAll('[data-msg]').forEach(function (field) {
+      field.addEventListener('invalid', function () {
+        field.setCustomValidity(field.getAttribute('data-msg') || '');
+      });
+      field.addEventListener('input', function () {
+        field.setCustomValidity('');
+      });
+    });
+  }
+
+  /* --- 7 Ideals board ---------------------------------------------------
+     Two behaviours: the tiles stagger in when the board first scrolls
+     into view, and clicking a tile expands its summary. Only one stays
+     open at a time — seven open panels is just a list again.           */
+  /* --- 7 Ideals board ---------------------------------------------------
+     Entrance is pure CSS (a view timeline), so nothing here decides
+     whether the panels are visible — content that only appears once a
+     script has run can fail to appear at all. This handles the click:
+     one panel's summary open at a time, seven open is just a list.    */
+  function initIdeals() {
+    var board = document.querySelector('[data-ideals-board]');
+    if (!board) return;
+
+    var panels = Array.prototype.slice.call(board.querySelectorAll('.ideal-panel'));
+    var heads  = panels.map(function (p) { return p.querySelector('[data-ideal-toggle]'); });
+
+    panels.forEach(function (panel, idx) {
+      var head = heads[idx];
+      if (!head) return;
+
+      head.addEventListener('click', function () {
+        var wasOpen = panel.classList.contains('is-open');
+
+        panels.forEach(function (other, k) {
+          other.classList.remove('is-open');
+          if (heads[k]) heads[k].setAttribute('aria-expanded', 'false');
+        });
+
+        if (!wasOpen) {
+          panel.classList.add('is-open');
+          head.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+
+    // Left/Right arrows move between panels, as a grid of controls should.
+    board.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return;
+
+      var at = heads.indexOf(document.activeElement);
+      if (at === -1) return;
+
+      ev.preventDefault();
+      var next = (at + (ev.key === 'ArrowRight' ? 1 : -1) + heads.length) % heads.length;
+      if (heads[next]) heads[next].focus();
+    });
+  }
+
+  /* --- about: stat numbers count up ------------------------------------
+     Enhancement only. The final value is already in the markup, so a
+     browser with scripting off, without IntersectionObserver, or asking
+     for reduced motion just shows it -- nothing here is load-bearing.
+
+     Values that read as a bare year are left alone: "Party founded"
+     ticking up from zero looks like a bug rather than a flourish. */
+  function initStatCounts() {
+    var nums = Array.prototype.slice.call(
+      document.querySelectorAll('.section--about .stat b'));
+    if (!nums.length || !window.IntersectionObserver) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var targets = [];
+    nums.forEach(function (el) {
+      // Admin-editable free text: "500+", "20+", "2014", "1,200 members".
+      var parts = el.textContent.trim().match(/^(\D*)(\d[\d,]*)([\s\S]*)$/);
+      if (!parts) return;
+
+      var value = parseInt(parts[2].replace(/,/g, ''), 10);
+      if (!isFinite(value) || value < 2) return;
+      if (!parts[1] && !parts[3] && value >= 1900 && value <= 2100) return;
+
+      targets.push({
+        el: el,
+        prefix: parts[1],
+        value: value,
+        suffix: parts[3],
+        grouped: parts[2].indexOf(',') !== -1
+      });
+    });
+    if (!targets.length) return;
+
+    function run(t) {
+      var started = null;
+      var duration = 1100;
+
+      function frame(now) {
+        if (started === null) started = now;
+        var p = Math.min(1, (now - started) / duration);
+        var n = Math.round(t.value * (1 - Math.pow(1 - p, 3)));   // ease-out
+        t.el.textContent =
+          t.prefix + (t.grouped ? n.toLocaleString('en-AU') : String(n)) + t.suffix;
+        if (p < 1) window.requestAnimationFrame(frame);
+      }
+      window.requestAnimationFrame(frame);
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        io.unobserve(entry.target);
+        for (var i = 0; i < targets.length; i++) {
+          if (targets[i].el === entry.target) { run(targets[i]); return; }
+        }
+      });
+    }, { threshold: 0.5 });
+
+    targets.forEach(function (t) { io.observe(t.el); });
+  }
+
+  /* --- reveal on entry --------------------------------------------------
+     Marks elements with data-reveal (which is what the stylesheet's hidden
+     state keys off) and adds .is-in when they scroll into view. Nothing is
+     hidden until this runs, so a blocked or failed script leaves the page
+     fully visible rather than blank -- the reason the reveals are not
+     written as plain CSS in the first place.
+
+     Animations are played on a timer rather than tied to scroll offset. A
+     scroll-linked reveal advances one step per wheel notch, which reads as
+     choppy; started on entry, each one runs its own smooth curve no matter
+     how the visitor scrolls.
+
+     `alt` alternates its group left/right, so rows of announcements come in
+     from opposite sides. */
+  var REVEALS = [
+    ['.section-head h2,.ideals-band__head h2,.album-block__head h2', 'wipe'],
+    ['.section-head .rule,.ideals-band__head .rule,.about-copy .rule,.about-card .rule,.section--red .rule', 'rule'],
+    ['.section-head .eyebrow,.ideals-band__head .eyebrow,.album-block__meta', 'up'],
+    ['.ideals-core', 'core'],
+    ['.ideal-panel', 'panel'],
+    ['.ann-list>*,.ideal-row', 'alt'],
+    ['.cards>*', 'card'],
+    ['.gal-grid>*,.album-strip>*', 'tile'],
+    ['.stats>*', 'pop'],
+    ['.split .media,.about-figure', 'frame'],
+    ['.about-copy>*:not(.stats),.about-card>*', 'up'],
+    ['.section--red .wrap>*', 'up'],
+    ['.site-footer .f-grid>*', 'up'],
+    ['.f-disclaimer,.f-bottom', 'fade'],
+    ['.gal-scroller', 'up'],
+    ['.album-tabs,.album-block__head,.video-embed,.form,.notice,.empty,.prose>.lede', 'up']
+  ];
+
+  function initReveals() {
+    if (!('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-in');
+        io.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
+
+    var fold = window.innerHeight * 0.94;
+
+    REVEALS.forEach(function (pair) {
+      var seen = new Map();          // per parent, so each group restarts at 0
+
+      document.querySelectorAll(pair[0]).forEach(function (el) {
+        if (el.hasAttribute('data-reveal')) return;   // first rule wins
+
+        var parent = el.parentElement;
+        var n = seen.get(parent) || 0;
+        seen.set(parent, n + 1);
+
+        var kind = pair[1] === 'alt' ? (n % 2 ? 'right' : 'left') : pair[1];
+        el.setAttribute('data-reveal', kind);
+        // Capped, or a long list ends up waiting seconds for its last item.
+        if (n) el.style.setProperty('--i', Math.min(n, 7));
+
+        // Already on screen: reveal in the same frame it was hidden, so the
+        // element is never painted in its hidden state.
+        if (el.getBoundingClientRect().top < fold) el.classList.add('is-in');
+        else io.observe(el);
+      });
+    });
+  }
+
+  /* --- auto-scrolling gallery strip -------------------------------------
+     Drives a real scroll container forward a fraction of a pixel per frame.
+     The markup renders the photographs twice, so on passing the halfway
+     mark we subtract half the width and land on an identical frame: the
+     loop has no seam, and none of the rewind a slide carousel needs.
+
+     Sub-pixel movement is accumulated rather than written straight to
+     scrollLeft, because a browser that keeps scrollLeft an integer would
+     round every 0.6px step back to zero and the strip would never move.
+
+     Motion stops while a pointer is over it, while focus is inside it,
+     while the tab is hidden, for five seconds after a touch, and entirely
+     under prefers-reduced-motion. There is no visible pause control: it
+     was removed by request, so a keyboard visitor who does not tab into
+     the strip has no way to stop it (WCAG 2.2.2). */
+  function initGalleryStrip() {
+    var root = document.querySelector('[data-gal-scroller]');
+    if (!root) return;
+
+    var view  = root.querySelector('.gal-scroller__viewport');
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    var SPEED = 0.6;          // px per frame, ~36px a second
+    var wanted = !still.matches;
+    var hovering = false, focused = false, carry = 0, holdUntil = 0;
+
+    // The distance between a photograph and its twin in the second copy.
+    // Not scrollWidth/2: the viewport is padded at its two ends only, so
+    // half the scroll width overshoots by that padding and the loop drifts.
+    function half() {
+      var items = view.querySelectorAll('.gal-scroller__item');
+      if (items.length < 2) return 0;
+      var twin = items[items.length / 2];
+      return twin ? twin.offsetLeft - items[0].offsetLeft : view.scrollWidth / 2;
+    }
+
+    function moving() {
+      return wanted && !hovering && !focused && !document.hidden &&
+             Date.now() > holdUntil;
+    }
+
+    function frame() {
+      if (moving()) {
+        carry += SPEED;
+        var whole = Math.floor(carry);
+        if (whole) {
+          carry -= whole;
+          view.scrollLeft += whole;
+        }
+        var loop = half();
+        if (loop > 0 && view.scrollLeft >= loop) view.scrollLeft -= loop;
+      }
+      window.requestAnimationFrame(frame);
+    }
+
+    // Nudging by one card. Stepping back from the very start would hit the
+    // hard edge of the scroll container, so jump to the matching point in
+    // the second copy first -- the visitor cannot tell the difference.
+    function nudge(dir) {
+      var card = view.querySelector('.gal-scroller__item');
+      var by = card ? card.getBoundingClientRect().width + 16 : 240;
+      if (dir < 0 && view.scrollLeft < by) view.scrollLeft += half();
+      view.scrollBy({ left: dir * by, behavior: 'smooth' });
+      holdUntil = Date.now() + 4000;      // let the smooth scroll land
+    }
+
+    var prev = root.querySelector('[data-gal-prev]');
+    var next = root.querySelector('[data-gal-next]');
+    if (prev) prev.addEventListener('click', function () { nudge(-1); });
+    if (next) next.addEventListener('click', function () { nudge(1); });
+
+    root.addEventListener('mouseenter', function () { hovering = true; });
+    root.addEventListener('mouseleave', function () { hovering = false; });
+    root.addEventListener('focusin',  function () { focused = true; });
+    root.addEventListener('focusout', function () { focused = false; });
+    view.addEventListener('touchstart', function () { holdUntil = Date.now() + 5000; },
+                          { passive: true });
+
+    // Keep the wrap correct when the visitor scrolls or swipes past the seam.
+    view.addEventListener('scroll', function () {
+      var loop = half();
+      if (loop > 0 && view.scrollLeft >= loop) view.scrollLeft -= loop;
+    }, { passive: true });
+
+    still.addEventListener('change', function (ev) { wanted = !ev.matches; });
+
+    window.requestAnimationFrame(frame);
+  }
+
+  function ready(fn) {
+    if (document.readyState !== 'loading') fn();
+    else document.addEventListener('DOMContentLoaded', fn);
+  }
+
+  ready(function () {
+    initSubmenus();
+    initBurger();
+    initHero();
+    initIdeals();
+    initStatCounts();
+    initReveals();
+    initGalleryStrip();
+    initVideoFacades();
+    hardenExternalLinks();
+    guardForms();
+    initValidationMessages();
+  });
+})();
