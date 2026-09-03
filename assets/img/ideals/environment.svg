@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 118 1200 462" width="1200" height="462" role="presentation">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#232a36"/>
+      <stop offset="1" stop-color="#0f131a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="62%">
+      <stop offset="0" stop-color="#3f4a5b" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#0f131a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ember" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#c8232a" stop-opacity=".34"/>
+      <stop offset="1" stop-color="#c8232a" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="600" fill="url(#sky)"/>
+  <rect width="1200" height="600" fill="url(#glow)"/>
+  <path d="M300 560c60-120 210-150 300-150s240 30 300 150z" fill="#242c38" opacity=".9"/>
+  <g fill="#6a7789" opacity=".92">
+    <path d="M410 470c-34-22-58-8-58 22 0 46 62 96 148 96h200c86 0 148-50 148-96 0-30-24-44-58-22-30 20-60 30-90 30H500c-30 0-60-10-90-30z"/>
+  </g>
+  <path d="M600 470V330" stroke="#8a97aa" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M600 372c-70-6-104-46-104-96 62-6 104 34 104 96z" fill="#5c8a61" opacity=".95"/>
+  <path d="M600 340c66-10 96-52 92-104-60 2-96 44-92 104z" fill="#6ea173" opacity=".95"/>
+  <path d="M600 300c40-30 50-70 40-108-38 22-50 66-40 108z" fill="#7fb47a" opacity=".85"/>
+  <ellipse cx="600" cy="600" rx="620" ry="110" fill="#0f131a" opacity=".6"/>
+  <rect width="1200" height="600" fill="url(#ember)"/>
+</svg>
