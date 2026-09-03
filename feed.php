@@ -5,7 +5,7 @@
     <link>http://localhost/announcements.php</link>
     <description>News and notices from Janasena Australia.</description>
     <language>en-AU</language>
-    <lastBuildDate>Thu, 27 Aug 2026 19:12:51 +1000</lastBuildDate>
+    <lastBuildDate>Thu, 03 Sep 2026 17:35:56 +1000</lastBuildDate>
     <atom:link href="http://localhost/feed.php" rel="self" type="application/rss+xml"/>
     <item>
       <title>jk</title>

@@ -76,16 +76,86 @@ button,input,select,textarea{font:inherit;color:inherit}
   max-width:none;padding:0}
 
 /* white angled plate carrying the emblem — mirrors janasenaparty.org */
-.brand{display:flex;align-items:center;gap:14px;background:var(--white);
-  padding:10px 62px 10px clamp(20px,4vw,54px);position:relative;flex:0 0 auto;
+/* The banner the official logo sits on, reproduced as a gradient so the
+   emblem sits ON the line rather than beside it. Proportions are measured
+   off the artwork: relative to the emblem's height the band is a 2.2%
+   rule, a 10.7% bar, a 2.2% rule and a 2% black line, which at a 54px
+   emblem gives the pixel offsets below.
+
+   background-size stops the band partway into the gap before the wordmark
+   (left padding + the 54px emblem + 7px). Run edge to edge it struck
+   through "Janasena" at x-height and put the black line through
+   MELBOURNE - AUSTRALIA, which read as deleted text. */
+.brand{display:flex;align-items:center;gap:14px;
+
+  /* ------------------------------------------------------------------
+     THE LOGO SIZE LIVES HERE. Change --emblem and everything follows:
+     the mark itself, the thickness of the banner behind it, and where
+     the banner stops before the wordmark. Nothing else needs touching.
+     ------------------------------------------------------------------ */
+  --emblem:48px;
+
+  /* The left padding is a variable because --run-l is derived from it: the
+     banner has to stop in the gap after the emblem, and if the two are set
+     independently they drift apart and the rules strike through the
+     wordmark. Change the padding here, or in a media query, and the band
+     follows it. */
+  --pad-l:clamp(20px,4vw,54px);
+
+  /* The banner from the official artwork, as fractions of the emblem's
+     height (measured off the source: a 2.2% rule, a 10.7% bar, a 2.2%
+     rule and a 2% black line). Expressed against --emblem so the band
+     stays in proportion whatever size the mark is set to. */
+  --banner:linear-gradient(to bottom,
+    transparent calc(50% - .112 * var(--emblem)),
+    #d81616    calc(50% - .112 * var(--emblem)), #d81616 calc(50% - .091 * var(--emblem)),
+    transparent calc(50% - .091 * var(--emblem)),
+    transparent calc(50% - .081 * var(--emblem)),
+    #d81616    calc(50% - .081 * var(--emblem)), #d81616 calc(50% + .025 * var(--emblem)),
+    transparent calc(50% + .025 * var(--emblem)),
+    transparent calc(50% + .036 * var(--emblem)),
+    #d81616    calc(50% + .036 * var(--emblem)), #d81616 calc(50% + .057 * var(--emblem)),
+    transparent calc(50% + .057 * var(--emblem)),
+    transparent calc(50% + .102 * var(--emblem)),
+    #000       calc(50% + .102 * var(--emblem)), #000 calc(50% + .121 * var(--emblem)),
+    transparent calc(50% + .121 * var(--emblem)));
+
+  /* left run: in from the edge, behind the mark, stopping 6px into the
+     gap. right run: picks up again inside the plate's right padding. */
+  --run-l:calc(var(--pad-l) + var(--emblem) + 6px);
+  /* The right band has to stay inside the right padding, or it runs into
+     the end of the wordmark and strikes through it -- which is what the
+     third word made happen. Derived, like --run-l, so the two cannot
+     drift: every breakpoint below already used padding minus 8. */
+  --pad-r:62px;
+  --run-r:max(0px, calc(var(--pad-r) - 8px));
+
+  background-color:var(--white);
+  background-image:var(--banner),var(--banner);
+  background-repeat:no-repeat,no-repeat;
+  background-size:var(--run-l) 100%,var(--run-r) 100%;
+  background-position:left center,right center;
+  padding:10px var(--pad-r) 10px var(--pad-l);position:relative;flex:0 0 auto;
   clip-path:polygon(0 0,100% 0,calc(100% - 46px) 100%,0 100%)}
 .brand:hover{text-decoration:none}
-.brand::before,.brand::after{content:"";position:absolute;left:0;right:38px;height:4px;background:var(--red-mark)}
+/* right:0, not an inset: the plate is clipped on the diagonal, so running
+   the rules to its edge lets the clip end them exactly where the red
+   masthead begins. Held 38px short they stopped in white. */
+.brand::before,.brand::after{content:"";position:absolute;left:0;right:0;height:4px;background:var(--red-mark)}
 .brand::before{top:9px}
 .brand::after{bottom:9px}
-.brand img{height:54px;width:auto}
-.brand-text strong{display:block;font-size:1.1rem;letter-spacing:.3px;line-height:1.1;color:var(--red-mark)}
-.brand-text span{display:block;font-size:.68rem;letter-spacing:2.2px;color:var(--ink);text-transform:uppercase}
+.brand img{height:var(--emblem);width:auto}
+/* Set uppercase here rather than storing "JANASENA" in the setting: the
+   value stays naturally cased for anyone editing it in the admin, and
+   Telugu is unaffected because the script has no case. Uppercase needs
+   more tracking than mixed case to stop the letters crowding. */
+.brand-text strong{display:block;font-size:1.06rem;letter-spacing:1.4px;line-height:1.1;
+  text-transform:uppercase;color:var(--red-mark)}
+/* Centred under the wordmark rather than ranged left: the line above it is
+   now three words, and a single short word hanging off its left edge read
+   as a stray rather than part of the lockup. */
+.brand-text span{display:block;font-size:.68rem;letter-spacing:2.2px;color:var(--ink);
+  text-transform:uppercase;text-align:center}
 
 .nav{display:flex;align-items:center;gap:2px;padding-right:clamp(16px,3vw,40px)}
 .nav a{padding:10px 13px;border-radius:6px;font-size:.9rem;font-weight:500;color:#fff;white-space:nowrap}
@@ -122,25 +192,54 @@ button,input,select,textarea{font:inherit;color:inherit}
   font-weight:600;font-size:.88rem;margin-left:8px}
 .btn-cta:hover{background:var(--ink);color:#fff!important;text-decoration:none}
 .burger{all:unset;display:none;cursor:pointer;padding:10px 20px;font-size:1.5rem;line-height:1;color:#fff;align-self:center}
+.nav__head{display:none}
 
 /* Between the drawer breakpoint and a roomy desktop the masthead is tight:
    eight nav links, a CTA, and a brand plate that now names the city as well
    as the country. Tighten what costs width here rather than raising the
    drawer breakpoint, which would hand laptops a burger menu they don't need.
    Scoped to `.nav > a` so the Gallery dropdown keeps its own padding. */
-@media(min-width:1161px) and (max-width:1340px){
-  .brand-text span{font-size:.62rem;letter-spacing:1.2px}
-  .nav{gap:0;padding-right:clamp(10px,1.6vw,24px)}
-  .nav>a,.has-sub>button{padding:10px 9px;font-size:.855rem}
-  .btn-cta{padding:10px 16px;margin-left:4px}
+@media(min-width:1161px) and (max-width:1439px){
+  /* The wordmark now carries the city and the entity suffix as well as the
+     name, which added ~124px to the plate and pushed this band into
+     overflow. Everything below gives that back: the wordmark itself comes
+     down a step, the plate's padding tightens, and the nav gives up a few
+     more pixels per link.
+
+     The band runs to 1439 rather than 1340: at full size the plate and the
+     nav together need 1366px, so 1341-1439 could not carry them either.
+     Measured at the boundary, not guessed. */
+  .brand{--pad-r:60px;--pad-l:clamp(16px,2.4vw,34px)}
+  .brand-text strong{font-size:.92rem;letter-spacing:.7px}
+  .brand-text span{font-size:.6rem;letter-spacing:1.1px}
+  /* Fluid, not a flat squeeze. A single step compressed 1161 and 1439 by
+     the same amount, but only the bottom of the band is actually short of
+     room: at 1280 there were 173 unused pixels and at 1439 there were 328,
+     and the nav looked crowded through all of it for no reason. These ease
+     from the tightest workable spacing at 1161 to the full values by 1440,
+     where the unprefixed rules take over at the same numbers -- so there is
+     no jump at the boundary. */
+  .nav{gap:clamp(0px,calc(.72vw - 8.3px),2px);padding-right:clamp(6px,calc(12.2vw - 135.6px),40px)}
+  .nav>a,.has-sub>button{
+    padding:10px clamp(7px,calc(2.15vw - 18px),13px);
+    font-size:clamp(.83rem,calc(.4vw + 8.6px),.9rem);
+  }
+  .btn-cta{
+    padding:clamp(10px,calc(.36vw + 5.8px),11px) clamp(13px,calc(3.23vw - 24.5px),22px);
+    margin-left:clamp(2px,calc(2.15vw - 23px),8px);
+  }
 }
 
-/* Small phones: brand plate plus burger has to fit inside the viewport. */
-@media(max-width:420px){
-  .brand{gap:10px;padding-right:14px}
-  .brand img{height:44px}
-  .brand-text strong{font-size:.98rem}
-  .brand-text span{font-size:.57rem;letter-spacing:.9px}
+/* Small phones: brand plate + the header's 20px flex gap + burger all have
+   to fit the viewport. 470, not 420: at full size that sum is 453px, so
+   the widths just above the old breakpoint could not carry it either. */
+@media(max-width:470px){
+  /* The wordmark carries three words here, not one, and it shares a 390px
+     screen with the burger. Sized so the plate plus the burger still fit
+     the narrowest phones -- measured, not estimated. */
+  .brand{gap:9px;--pad-r:14px;--pad-l:14px}
+  .brand-text strong{font-size:.74rem;letter-spacing:.2px}
+  .brand-text span{font-size:.54rem;letter-spacing:.8px}
   .burger{padding:10px 12px}
 }
 /* 1160, not 1040: eight top-level links, a CTA and a brand plate naming
@@ -148,15 +247,27 @@ button,input,select,textarea{font:inherit;color:inherit}
    drawer is a better answer there than a nav squeezed until it is unreadable. */
 @media(max-width:1160px){
   .burger{display:block}
-  .brand{clip-path:none;padding-right:26px}
+  /* no angled edge here, so the right run is just the padding less a gap */
+  .brand{clip-path:none;--pad-r:26px}
   .brand::before,.brand::after{right:0}
   .nav a,.has-sub>button{color:var(--ink)}
   .nav a:hover,.has-sub>button:hover{background:var(--paper);color:var(--red)}
   .nav a[aria-current="page"]{background:#fdf0ef;color:var(--red)}
   .btn-cta{background:var(--red);color:#fff!important}
   .nav{position:fixed;inset:0 0 0 auto;width:min(320px,84vw);background:#fff;flex-direction:column;
-    align-items:stretch;padding:88px 16px 24px;transform:translateX(102%);transition:.28s;
+    align-items:stretch;padding:0 16px 24px;transform:translateX(102%);transition:.28s;
     box-shadow:var(--shadow-lg);overflow-y:auto;z-index:70}
+  /* Sticky, so the mark and the close button stay put while a long menu
+     scrolls underneath them. */
+  .nav__head{display:flex;align-items:center;justify-content:center;position:sticky;top:0;z-index:2;
+    background:#fff;padding:16px 0 14px;margin-bottom:8px;border-bottom:1px solid var(--line)}
+  .nav__head img{width:48px;height:48px}
+  .nav__close{all:unset;position:absolute;left:0;top:50%;translate:0 -50%;
+    width:42px;height:42px;display:grid;place-items:center;cursor:pointer;
+    font-size:1.7rem;line-height:1;color:var(--ink);border-radius:8px;
+    transition:background-color .2s ease,color .2s ease}
+  .nav__close:hover{background:var(--paper);color:var(--red)}
+  .nav__close:focus-visible{outline:3px solid var(--red);outline-offset:2px}
   body[data-menu="open"] .nav{transform:none}
   .nav a,.has-sub>button{width:100%;padding:13px 12px}
   .sub{position:static;display:flex;box-shadow:none;border:0;padding:0 0 0 12px}
@@ -164,6 +275,25 @@ button,input,select,textarea{font:inherit;color:inherit}
   .lang-menu>summary:hover{background:var(--paper);color:var(--red)}
   .lang-menu .sub{min-width:0}
   .btn-cta{text-align:center;margin-top:10px}
+}
+
+/* After the 1160 block on purpose: on a small phone both media queries
+   match, and
+   with equal specificity the later rule wins. Declared earlier, the small
+   phone's shorter banner was silently overridden and the left run pushed
+   7px under the wordmark. */
+@media(max-width:470px){
+  .brand{--emblem:40px}
+}
+
+/* Narrowest phones still in use (320px). One more step down: at the 470
+   sizing the plate, the header's flex gap and the burger came to 321px
+   against the 305px such a screen actually has. After the block above for
+   the same reason -- equal specificity, later rule wins. */
+@media(max-width:360px){
+  .brand{--emblem:34px;gap:7px;--pad-l:10px;--pad-r:10px}
+  .brand-text strong{font-size:.68rem;letter-spacing:.1px}
+  .brand-text span{font-size:.5rem;letter-spacing:.6px}
 }
 
 /* ---------------------------------------------------------------- hero */
@@ -180,55 +310,67 @@ button,input,select,textarea{font:inherit;color:inherit}
    know image-set() at all. */
 .hero{position:relative;min-height:clamp(420px,58vw,620px);display:grid;align-items:center;
   color:#fff;overflow:hidden;
+  /* The picture itself is set inline on the element, so its URL carries a
+     ?v=<mtime> stamp and a replaced file is actually re-fetched. Only the
+     ground colour and the sizing live here. */
   background:#0c0a11 center/cover no-repeat;
-  background-image:url('../img/hero/hero-crowd.jpg');
-  background-image:image-set(url('../img/hero/hero-crowd.webp') type('image/webp'),
-                             url('../img/hero/hero-crowd.jpg') type('image/jpeg'));
 }
-.hero .wrap{position:relative;z-index:2;padding-block:64px}
+/* width:100% matters: .hero is a grid, so with `margin:0 auto` from .wrap
+   and no width the item shrink-wraps its content and centres, which is
+   what held the copy out in the middle of the hero while the election
+   seal sat to its left. Filling the track puts the text on the same left
+   edge as every other section on the page. */
+.hero .wrap{position:relative;z-index:2;width:100%;padding-block:64px}
 .hero .eyebrow{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);
   padding:6px 15px;border-radius:999px;font-size:.74rem;letter-spacing:2.2px;text-transform:uppercase;
   margin-bottom:18px;color:#fff}
-.hero h1{font-size:clamp(1.9rem,4.6vw,3.3rem);margin-bottom:.35em;max-width:19ch;
+.hero h1{font-size:clamp(1.42rem,4.6vw,3.3rem);margin-bottom:.35em;max-width:24ch;
+  /* The floor is what phones get: 4.6vw does not overtake it until ~493px.
+     It is set by the longest line the headline's own break leaves rather
+     than chosen for its own sake -- at the old 1.9rem, 'Janasena Melbourne
+     INC,' needed 402px against the 305px a 360px phone has, so it wrapped
+     again and left 'INC,' orphaned on a line of its own. */
+  /* 24ch, not 19: the headline carries its own break now, so the cap only
+     has to clear the longest line that break leaves -- 'Janasena Melbourne
+     INC,' is 23 characters. Any narrower and the text wraps again and the
+     break lands in the wrong place. */
   text-shadow:0 3px 22px rgba(0,0,0,.4)}
 .hero .lede{font-size:clamp(1rem,1.7vw,1.22rem);max-width:46ch;opacity:.95;margin-bottom:28px}
 .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
-/* A standing figure, unlike the circular seal it replaced, is anchored to
-   the bottom edge rather than centred — a person floating mid-air reads
-   as a mistake. It sits above the gradient overlay so the face is not
-   darkened by it. */
-/* The <picture> itself is positioned, not the <img> inside it: .hero is a
-   grid, so a static picture element would become a stray grid item and
-   push the layout around. */
-.hero-figure{position:absolute;z-index:1;right:clamp(8px,6vw,120px);bottom:0;
-  height:min(96%,580px);width:auto;pointer-events:none;
-  filter:drop-shadow(0 18px 44px rgba(0,0,0,.42))}
-.hero-figure img{height:100%;width:auto;display:block;object-fit:contain;object-position:bottom center}
-@media(max-width:1040px){.hero-figure{right:16px;height:min(84%,440px);opacity:.9}}
-/* On phones the text has to win, so the figure drops back to a watermark. */
-@media(max-width:760px){.hero-figure{right:-6%;height:min(74%,360px);opacity:.3;filter:none}}
+/* The background photograph is stored in its own colours, so the legibility
+   of the white copy lives here rather than being baked into the file. That
+   keeps the asset a photograph -- swap it and this still holds -- and lets
+   the wash be tuned without re-encoding anything.
+
+   Weighted to the left, because that is the only side the copy occupies:
+   the right of the frame keeps most of its brightness. Strength is measured
+   rather than picked: against this photograph a lighter wash left about 5%
+   of the text area below a 3:1 ratio, which is a white flag showing through
+   behind a word.
+
+   position:absolute matters -- .hero is a grid, so a static pseudo-element
+   would become a stray grid item and push the layout around, exactly as a
+   static <picture> would. */
+.hero::before{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 78% 82% at 50% 48%, transparent 38%, rgba(0,0,0,.30) 100%),
+    linear-gradient(90deg, rgba(0,0,0,.72) 0%, rgba(0,0,0,.60) 38%, rgba(0,0,0,.50) 52%, rgba(0,0,0,.12) 100%);
+}
+/* Narrow screens: the copy runs nearly the full width, so a wash that fades
+   out to the right would leave the end of the paragraph unprotected. */
+@media(max-width:820px){
+  .hero::before{
+    background:
+      radial-gradient(ellipse 90% 90% at 50% 48%, transparent 42%, rgba(0,0,0,.26) 100%),
+      linear-gradient(90deg, rgba(0,0,0,.70) 0%, rgba(0,0,0,.58) 100%);
+  }
+}
+@media(max-width:760px){
+  .hero{min-height:min(86vh,660px)}
+  .hero .wrap{padding-block:clamp(36px,7vw,56px)}
+}
 .hero-dots{position:absolute;bottom:22px;left:0;right:0;z-index:3;display:flex;gap:9px;justify-content:center}
-
-/* The election symbol, balancing the standing figure on the other side.
-   The hero's .wrap is content-sized and centred (margin:auto on a grid item
-   stops it stretching), so at 1440px the text block runs 373..1067 and this
-   column of roughly 370px is genuinely free -- the seal is sized to sit in
-   it rather than to overlap the headline.
-
-   It shrinks with the viewport and is dropped below 760px: the figure is
-   already a watermark there, and two competing watermarks behind the text
-   is noise, not branding. */
-.hero-symbol{position:absolute;z-index:1;top:50%;translate:0 -50%;
-  left:clamp(10px,3vw,72px);width:clamp(150px,18vw,300px);
-  pointer-events:none;
-  filter:drop-shadow(0 16px 38px rgba(0,0,0,.55))}
-.hero-symbol img{width:100%;height:auto;display:block}
-@media(max-width:1200px){.hero-symbol{width:clamp(140px,17vw,220px)}}
-@media(max-width:1040px){.hero-symbol{width:130px;opacity:.9;left:10px}}
-/* Hidden below 900, not 760: the text block is content-sized, so its left
-   edge marches leftward faster than the seal shrinks and the two collide
-   from about 820px down. Measured, not guessed. */
-@media(max-width:900px){.hero-symbol{display:none}}
 
 .hero-dots button{all:unset;cursor:pointer;width:11px;height:11px;border-radius:50%;
   background:rgba(255,255,255,.42);transition:.2s}
@@ -311,6 +453,53 @@ button,input,select,textarea{font:inherit;color:inherit}
    all four; auto-fit collapses the tracks it does not need, so three or
    two members still fill the row evenly instead of leaving a hole. */
 .cards--compact{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+
+/* --- committee carousel (phones) ---------------------------------------
+   Stacked, four members is a long scroll past three people you have
+   already read. Across, it is one swipe. The class is added by script, so
+   the grid above stays the fallback when the script does not run. */
+@media(max-width:760px){
+  .cards--compact.is-carousel{
+    display:flex;gap:14px;
+    overflow-x:auto;overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory;
+    scrollbar-width:none;-ms-overflow-style:none;
+    padding-bottom:4px}
+  .cards--compact.is-carousel::-webkit-scrollbar{display:none}
+  /* 84%, not 100%: the sliver of the next card is what tells people there
+     is more to swipe to. */
+  .cards--compact.is-carousel>.member{flex:0 0 84%;scroll-snap-align:center}
+}
+
+/* --- committee marquee (above the phone breakpoint) ---------------------
+   Wide enough for the row to fit, there is nothing left to swipe to, so the
+   same grid becomes a strip that scrolls of its own accord. The script
+   clones the members to close the loop and adds the class, so a page
+   without JavaScript keeps the plain grid.
+
+   The vertical padding is for the cards' own shadow: setting overflow-x
+   computes overflow-y to auto as well, and without the room the shadow is
+   clipped along the top and bottom edges. */
+@media(min-width:761px){
+  .cards--compact.is-marquee{
+    display:flex;gap:24px;
+    overflow-x:auto;overscroll-behavior-x:contain;
+    scrollbar-width:none;-ms-overflow-style:none;
+    padding:6px 0 12px;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 4%,#000 96%,transparent 100%);
+            mask-image:linear-gradient(90deg,transparent 0,#000 4%,#000 96%,transparent 100%);
+  }
+  .cards--compact.is-marquee::-webkit-scrollbar{display:none}
+  .cards--compact.is-marquee>.member{flex:0 0 clamp(212px,19vw,268px)}
+}
+
+.committee-dots{display:flex;justify-content:center;gap:9px;margin-top:20px}
+.committee-dots button{
+  all:unset;box-sizing:border-box;width:9px;height:9px;border-radius:999px;cursor:pointer;
+  background:rgba(0,0,0,.2);transition:background-color .25s ease,width .25s ease}
+.committee-dots button[aria-current="true"]{background:var(--red);width:26px}
+.committee-dots button:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+
 .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
   box-shadow:var(--shadow);display:flex;flex-direction:column;transition:.2s}
 .card:hover{box-shadow:var(--shadow-lg)}
@@ -417,7 +606,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 .gal-scroller__nav--next{right:clamp(6px,2vw,26px)}
 
 @media(max-width:620px){
-  .gal-scroller__nav{display:none}          /* swiping is the better control here */
+  /* The arrows used to be hidden here on the reasoning that swiping was the
+     better control. Keeping them: a visitor who has not realised the strip
+     scrolls has nothing to tell them, and the arrows are also the only
+     control a keyboard reaches. Smaller and tighter to the edges so they
+     sit over the tiles rather than on top of the pictures. */
+  .gal-scroller__nav{width:36px;height:36px;font-size:1.25rem;padding-bottom:2px}
+  .gal-scroller__nav--prev{left:5px}
+  .gal-scroller__nav--next{right:5px}
   .gal-scroller__item{width:clamp(180px,62vw,240px)}
 }
 
@@ -463,53 +659,125 @@ button,input,select,textarea{font:inherit;color:inherit}
 .stat span{font-size:.76rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted)}
 .section--red .stat span{color:rgba(255,255,255,.8)}
 
-/* --- about page: cut-out portrait beside a text card -------------------
-   The portrait column is the narrower of the two: a standing figure needs
-   height, not width, and giving it the wider track just pushed the reading
-   column into a narrow ribbon. */
-.about-split{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(24px,4vw,56px);
-  align-items:center}
-@media(max-width:900px){.about-split{grid-template-columns:1fr;gap:32px}}
+/* --- about page ---------------------------------------------------------
+   Two columns: a framed photograph carrying a pull-quote on the left, the
+   reading column on the right. The photograph column is the narrower of the
+   two — a portrait needs height, not width, and giving it the wider track
+   pushes the reading column into a ribbon. */
+.about-lead{display:grid;grid-template-columns:.78fr 1.22fr;gap:clamp(28px,4.4vw,64px);
+  align-items:start}
+@media(max-width:980px){.about-lead{grid-template-columns:1fr;gap:38px}}
 
-/* The cut-out is a full-length standing figure (393x1200). Left to fill the
-   column it grows to well over a thousand pixels tall and strands the text
-   card in white space, so it is sized by HEIGHT and the width follows. */
-/* The photograph is framed and given the same cut corner as the block
-   behind it, so the two read as one shape rather than a picture sitting on
-   a rectangle. The block is offset down and left, which is what makes it
-   visible at all now that the image is opaque and fills its own frame. */
-.about-figure{position:relative;isolation:isolate}
-.about-figure::before{
-  content:"";position:absolute;left:0;bottom:0;width:84%;height:82%;z-index:0;
-  translate:-28px 28px;
-  background:linear-gradient(155deg,var(--red-cta) 0%,var(--red-dark) 100%);
-  border-radius:10px 120px 10px 20px;
+.about-lead__media{position:relative;isolation:isolate}
+
+/* The dot field behind the top-left corner of the frame. Drawn rather than
+   shipped: it is a 16px grid of 2px dots, which costs nothing and scales. */
+.about-lead__dots{
+  position:absolute;left:-26px;top:-26px;width:132px;height:132px;z-index:0;
+  background-image:radial-gradient(var(--line) 1.6px,transparent 1.6px);
+  background-size:15px 15px;opacity:.85;pointer-events:none}
+
+/* A white card holding the photograph, so the quote below it sits on the
+   same plate rather than floating over the page. */
+.about-lead__frame{
+  position:relative;z-index:1;
+  background:#fff;border-radius:20px;padding:clamp(10px,1.1vw,16px);
+  box-shadow:0 26px 60px rgba(24,10,12,.16)}
+.about-lead__frame picture{display:block}
+.about-lead__frame img{display:block;width:100%;height:auto;
+  /* 8:9 (0.889), narrower than the source's 900x950 (0.947). object-fit:cover
+     fills the box and crops whatever overflows, so a box WIDER than the
+     source loses the top and bottom — and the lettering on the lectern runs
+     to the foot of the frame, so that is exactly what gets thrown away. A
+     narrower box keeps the full height and trims the sides instead, which
+     costs only the outer edges of the emblem behind him. */
+  aspect-ratio:8/9;object-fit:cover;object-position:center center;
+  border-radius:14px}
+
+/* The pull-quote overlaps the foot of the photograph. Negative margin rather
+   than absolute positioning, so the card's own height still pushes the frame
+   down and nothing is clipped when the text runs long in either language.
+
+   A PERCENTAGE, not a vw clamp. Percentage margins resolve against the
+   containing block's WIDTH, and the photograph is locked to 4:5 — so -16% of
+   the width is always 12.8% of the photograph's height, at every size. The
+   vw version this replaces covered 31% of the picture on a desktop and 18%
+   on a phone.
+
+   Only -4%: the lettering on the lectern ends at 97% of the photograph's
+   height, so the card can overlap the foot of the picture but cannot eat
+   into it. Anything deeper and the word జనసేన goes. */
+.about-quote{
+  position:relative;margin:-3.4% 0 0;
+  background:linear-gradient(158deg,var(--red-dark) 0%,#5d1218 100%);
+  color:#fff;border-radius:16px;
+  padding:clamp(22px,2.4vw,32px);
+  box-shadow:0 20px 44px rgba(24,10,12,.34)}
+.about-quote__mark{
+  display:grid;place-items:center;width:42px;height:42px;border-radius:50%;
+  background:rgba(255,255,255,.14);color:#fff;margin-bottom:16px}
+.about-quote__mark svg{width:20px;height:20px}
+.about-quote__head{
+  font-size:clamp(1.02rem,1.5vw,1.28rem);font-weight:700;line-height:1.42;
+  margin:0 0 16px}
+.about-quote__rule{display:block;width:46px;height:2px;background:rgba(255,255,255,.62);
+  margin-bottom:16px}
+.about-quote figcaption{font-size:.92rem;line-height:1.7;color:rgba(255,255,255,.86)}
+
+@media(max-width:980px){
+  .about-lead__media{max-width:520px;margin-inline:auto}
 }
-.about-figure picture{position:relative;z-index:1;display:block}
-.about-figure img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;
-  object-position:center 22%;
-  border-radius:10px 120px 10px 20px;
-  box-shadow:0 24px 52px rgba(0,0,0,.24)}
-@media(max-width:900px){
-  .about-figure{max-width:420px;margin-inline:auto}
-  .about-figure::before{width:80%;height:78%;translate:-16px 16px;border-radius:8px 92px 8px 16px}
-  .about-figure img{border-radius:8px 92px 8px 16px}
+
+.about-lead__copy .prose p:last-child{margin-bottom:0}
+
+/* --- the four cards ---
+   auto-fit rather than a fixed pair of columns: one or three cards should
+   fill the row instead of leaving a hole, since each is dropped when its
+   setting is emptied. */
+.about-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));
+  gap:clamp(14px,1.3vw,18px);margin-top:clamp(26px,3vw,36px)}
+.about-tile{
+  display:flex;gap:16px;align-items:flex-start;
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:clamp(18px,1.8vw,24px);
+  transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+.about-tile:hover{border-color:rgba(200,35,42,.34);box-shadow:0 14px 30px rgba(24,10,12,.09);
+  transform:translateY(-2px)}
+.about-tile__icon{
+  flex:0 0 auto;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;
+  background:rgba(200,35,42,.11);color:var(--red)}
+.about-tile__icon svg{width:25px;height:25px}
+.about-tile h3{font-size:1rem;margin:2px 0 .45em;color:var(--ink)}
+.about-tile p{margin:0;font-size:.88rem;line-height:1.62;color:var(--muted)}
+
+/* --- the join panel ---
+   Same row as the cards visually, but a tinted ground and a button, because
+   it is the one block on the page asking for something. */
+.about-join{
+  display:flex;gap:clamp(16px,1.8vw,22px);align-items:center;flex-wrap:wrap;
+  background:rgba(200,35,42,.06);border:1px solid rgba(200,35,42,.16);
+  border-radius:16px;padding:clamp(18px,2vw,26px);
+  margin-top:clamp(14px,1.3vw,18px)}
+.about-join__icon{
+  flex:0 0 auto;display:grid;place-items:center;width:56px;height:56px;border-radius:50%;
+  background:var(--red-dark);color:#fff}
+.about-join__icon svg{width:27px;height:27px}
+.about-join__body{flex:1 1 260px;min-width:0}
+.about-join__body h3{font-size:1.02rem;margin:0 0 .4em;color:var(--ink)}
+.about-join__body p{margin:0;font-size:.88rem;line-height:1.62;color:var(--muted)}
+.about-join__cta{
+  flex:0 0 auto;display:inline-flex;align-items:center;gap:9px;
+  background:var(--red-dark);padding:12px 22px;font-size:.88rem}
+.about-join__cta:hover{background:var(--ink);color:#fff}
+.about-join__cta span{font-size:1.15rem;line-height:1;translate:0 -1px}
+
+@media(max-width:520px){
+  .about-join{flex-direction:column;align-items:flex-start}
+  .about-join__cta{width:100%;justify-content:center}
 }
 
-.about-card{position:relative;
-  background:linear-gradient(158deg,#fffafa 0%,#fff 52%,#fdf6f6 100%);
-  border:1px solid var(--line);border-radius:22px;
-  padding:clamp(26px,3.4vw,46px);box-shadow:var(--shadow-lg)}
-/* The emblem as a corner mark, where the reference puts a small sparkle --
-   faint enough to sit under the text without competing with it. */
-.about-card::after{
-  content:"";position:absolute;top:18px;right:20px;width:34px;height:34px;
-  background:url('../img/brand/emblem-mark-256.png') center/contain no-repeat;
-  opacity:.16;pointer-events:none}
-.about-card .prose{margin-top:4px}
-.about-card .prose p:last-child{margin-bottom:0}
-
-.about-split__stats{margin-top:clamp(30px,4vw,46px)}
+.about-lead__stats{margin-top:clamp(34px,4vw,52px)}
 
 /* ---------------------------------------------------------------- committee */
 .member{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
@@ -523,17 +791,19 @@ button,input,select,textarea{font:inherit;color:inherit}
 .member p{color:var(--muted);font-size:.88rem;margin:0 18px}
 
 /* ---------------------------------------------------------------- ideals */
-/* "7 Ideals of Janasena" board.
-   Proportions are taken from the party artwork (1685 x 941):
-     row height  ~17.8% of board width
-     hexagon      27.6% of board width, aspect 1.06 (wider than tall),
-                  centred 48% down
-     label type    1.54% of board width
-     icon circle   4.63% of board width
-     row 1  two panels meeting at the centre, NO channel
-     row 2  two panels with a ~22% centre channel
-     row 3  three panels, the middle one directly under the hexagon
-   A 24-column grid gives the halves, the channel and the thirds. */
+/* "Core values of Janasena" board.
+   Proportions measured off the party artwork, whose board is 1678 x 906:
+     cards        834 x 285, so aspect 2.93. Two columns split the board
+                  with a 9px gutter; the rows are 11px apart.
+     hexagon      30% of board width, aspect 1.214, centred 48% down. Flat
+                  top and bottom edges with points at left and right, and it
+                  is drawn OVER the cards rather than sitting in a channel
+                  between them -- which is what lets the cards fill the
+                  board. It covers the inner third of each one, so the
+                  content in every card is padded in to clear it.
+     corner cut   ~55px on that card, all four corners
+     label type   3.6% of card width
+     icon circle  32% of card height */
 
 .ideals-band{
   position:relative;isolation:isolate;
@@ -557,40 +827,78 @@ button,input,select,textarea{font:inherit;color:inherit}
 .ideals-board{
   position:relative;
   display:grid;
-  grid-template-columns:repeat(24,1fr);
-  /* 17.8% of the board's width, per the artwork */
-  grid-auto-rows:clamp(150px,17vw,292px);
-  gap:clamp(8px,.85vw,14px);
+  /* Two columns that all but meet in the middle. The hexagon is not a gap
+     in the grid: it is positioned over the cards and overlaps them, which
+     is what lets the cards run to 2.93 and fill the board as the artwork
+     does. Measured off the artwork at 1678px wide: cards 834x285, a 9px
+     gutter between the columns and 11px between the rows. */
+  grid-template-columns:repeat(2,1fr);
+  gap:clamp(6px,.64vw,11px);
   width:min(100% - 32px,1560px);
   margin-inline:auto;
 }
 /* Row 1 — two halves meeting at the centre seam */
-.ideal-panel--1{grid-column:1 / 13;  grid-row:1}
-.ideal-panel--2{grid-column:13 / 25; grid-row:1}
+/* Row 1 used to run the full width, which left its inner edges out of line
+   with rows 2 and 3 and made the board look ragged. All six panels are now
+   the same nine columns, so the channel the hexagon sits in runs straight
+   down the middle and every card is the same size. */
+.ideal-panel--1{grid-column:1; grid-row:1}
+.ideal-panel--2{grid-column:2; grid-row:1}
 /* Row 2 — a 25% channel down the middle for the hexagon */
-.ideal-panel--3{grid-column:1 / 10;  grid-row:2}
-.ideal-panel--4{grid-column:16 / 25; grid-row:2}
+.ideal-panel--3{grid-column:1; grid-row:2}
+.ideal-panel--4{grid-column:2; grid-row:2}
 /* Row 3 — the middle panel sits directly beneath the hexagon */
-.ideal-panel--5{grid-column:1 / 10;  grid-row:3}
-.ideal-panel--7{grid-column:10 / 16; grid-row:3}
-.ideal-panel--6{grid-column:16 / 25; grid-row:3}
+/* Row 3 is two panels flanking the channel the hexagon sits in. It used
+   to carry a narrow seventh panel between them; with six values that
+   slot is gone and the hexagon has the space to itself. */
+.ideal-panel--5{grid-column:1; grid-row:3}
+.ideal-panel--6{grid-column:2; grid-row:3}
 
 /* --- panels ----------------------------------------------------------- */
 .ideal-panel{
-  --cut:clamp(18px,2vw,34px);
+  --cut:clamp(16px,3.3vw,51px);
+  --edge:2px;
+  --glow:#ff3b43;
+  /* All four corners cut, ~55px on the artwork's 834x285 card. */
+  --shape:polygon(var(--cut) 0,calc(100% - var(--cut)) 0,
+                  100% var(--cut),100% calc(100% - var(--cut)),
+                  calc(100% - var(--cut)) 100%,var(--cut) 100%,
+                  0 calc(100% - var(--cut)),0 var(--cut));
   position:relative;overflow:hidden;
-  background:#0d0f15;
-  clip-path:polygon(0 0,calc(100% - var(--cut)) 0,100% var(--cut),
-                    100% 100%,var(--cut) 100%,0 calc(100% - var(--cut)));
-  box-shadow:
-    inset 0 0 0 1px rgba(232,50,58,.62),
-    inset 0 0 34px rgba(200,35,42,.12);
-  transition:box-shadow .35s ease;
+  aspect-ratio:2.93;
+  /* The frame is the panel's own ground, revealed as a --edge band by every
+     layer above being inset and re-clipped to the same shape. An inset
+     box-shadow cannot do this job twice over: it paints beneath the panel's
+     children, and clipping a rectangle's shadow to this outline erases the
+     stretch running along each diagonal. Four corner gradients rather than
+     flat red, because the artwork's outline burns bright at the corners and
+     falls away to near-dark at the middle of each edge. */
+  background:
+    radial-gradient(46% 150% at 0 0,       var(--glow) 0%, rgba(232,50,58,0) 72%),
+    radial-gradient(46% 150% at 100% 0,    var(--glow) 0%, rgba(232,50,58,0) 72%),
+    radial-gradient(46% 150% at 100% 100%, var(--glow) 0%, rgba(232,50,58,0) 72%),
+    radial-gradient(46% 150% at 0 100%,    var(--glow) 0%, rgba(232,50,58,0) 72%),
+    #3a1519;
+  clip-path:var(--shape);
+  /* drop-shadow, not box-shadow: clip-path crops an outer box-shadow away,
+     but a filter shadow follows the clipped outline, so the glow traces the
+     notched edge instead of a rectangle. */
+  filter:drop-shadow(0 0 9px rgba(232,50,58,.22));
+  transition:filter .35s ease;
+}
+/* The dark interior. Also the ground for a 'contain' image, whose mask fades
+   to transparent on the label side — without this it would fade to red. */
+.ideal-panel::before{
+  content:"";position:absolute;inset:var(--edge);z-index:0;
+  background:#0d0f15;clip-path:var(--shape);
+  box-shadow:inset 0 0 34px rgba(200,35,42,.14);
 }
 .ideal-panel__art{
-  position:absolute;inset:0;z-index:0;display:block;
+  position:absolute;inset:var(--edge);z-index:0;display:block;
+  clip-path:var(--shape);
   background-image:var(--bg);background-size:cover;background-position:center;
   opacity:.92;transform:scale(1.01);
+  filter:saturate(.6) brightness(.72);
   transition:opacity .5s ease,transform 1.2s ease;
 }
 /* 'contain': show the whole image instead of cropping it to fill. Anchored
@@ -606,14 +914,12 @@ button,input,select,textarea{font:inherit;color:inherit}
           mask-image:linear-gradient(90deg,transparent 4%,rgba(0,0,0,.45) 32%,#000 58%);
 }
 .ideal-panel--2.is-contain .ideal-panel__art,
-.ideal-panel--4.is-contain .ideal-panel__art,
-.ideal-panel--7.is-contain .ideal-panel__art{
+.ideal-panel--4.is-contain .ideal-panel__art{
   /* right-hand column: label is still on the left, so the fade direction
      is the same — stated explicitly so it survives a layout change */
   -webkit-mask-image:linear-gradient(90deg,transparent 4%,rgba(0,0,0,.45) 32%,#000 58%);
           mask-image:linear-gradient(90deg,transparent 4%,rgba(0,0,0,.45) 32%,#000 58%);
 }
-.ideal-panel--7.is-contain .ideal-panel__art{background-position:center bottom}
 @media(max-width:760px){
   .ideal-panel.is-contain .ideal-panel__art{background-position:center}
 }
@@ -628,49 +934,51 @@ button,input,select,textarea{font:inherit;color:inherit}
 }
 /* Directional black/navy wash, mirrored on the right-hand column */
 .ideal-panel__wash{
-  position:absolute;inset:0;z-index:1;display:block;pointer-events:none;
-  background:linear-gradient(96deg,
-    rgba(6,7,10,.93) 0%, rgba(8,10,15,.76) 28%, rgba(10,13,19,.34) 62%, rgba(10,13,19,.14) 100%);
-}
-.ideal-panel--2 .ideal-panel__wash,
-.ideal-panel--4 .ideal-panel__wash,
-.ideal-panel--6 .ideal-panel__wash{
-  background:linear-gradient(264deg,
-    rgba(6,7,10,.93) 0%, rgba(8,10,15,.76) 28%, rgba(10,13,19,.34) 62%, rgba(10,13,19,.14) 100%);
-}
-.ideal-panel--7 .ideal-panel__wash{
-  background:linear-gradient(180deg,
-    rgba(8,10,15,.42) 0%, rgba(6,7,10,.8) 54%, rgba(6,7,10,.93) 100%);
+  position:absolute;inset:var(--edge);z-index:1;display:block;pointer-events:none;
+  clip-path:var(--shape);
+  /* The artwork darkens each photograph evenly and lets a vignette carry the
+     edges, rather than ramping hard across the card. */
+  background:
+    radial-gradient(105% 140% at 50% 45%, rgba(6,7,10,.22) 0%, rgba(2,3,6,.97) 100%),
+    linear-gradient(180deg, rgba(6,7,10,.58), rgba(6,7,10,.68));
 }
 .ideal-panel:hover{
-  box-shadow:inset 0 0 0 1px rgba(232,50,58,.95), inset 0 0 46px rgba(200,35,42,.22);
+  --glow:#ff6f75;
+  filter:drop-shadow(0 0 18px rgba(232,50,58,.5));
 }
+.ideal-panel:hover::before{box-shadow:inset 0 0 46px rgba(200,35,42,.22)}
 .ideal-panel:hover .ideal-panel__art{opacity:1;transform:scale(1.05)}
 .ideal-panel:not(.is-art):hover .ideal-panel__art{opacity:1}
-.ideal-panel.is-open{box-shadow:inset 0 0 0 1px #e8323a, inset 0 0 52px rgba(200,35,42,.28)}
+.ideal-panel.is-open{--glow:#ff6f75}
+.ideal-panel.is-open::before{box-shadow:inset 0 0 52px rgba(200,35,42,.28)}
 
 /* --- panel content ----------------------------------------------------- */
 .ideal-panel__hit{
   all:unset;box-sizing:border-box;position:relative;z-index:2;
   display:flex;align-items:center;gap:clamp(16px,1.7vw,28px);
   width:100%;height:100%;
-  padding:clamp(20px,2.2vw,34px) clamp(22px,2.6vw,42px);cursor:pointer;
+  padding:clamp(18px,2vw,30px) clamp(20px,2.4vw,38px);cursor:pointer;
+  /* Percentages of the card, matching the artwork. The hexagon covers the
+     inner ~30% of every card, so the right-hand column starts its content
+     well in from the edge; the left-hand column reads left-to-right into
+     the hexagon and needs no such allowance. */
+  padding-left:11%;
+  padding-right:30%;
+}
+.ideal-panel--2 .ideal-panel__hit,
+.ideal-panel--4 .ideal-panel__hit,
+.ideal-panel--6 .ideal-panel__hit{
+  padding-left:34%;
+  padding-right:clamp(20px,2.4vw,38px);
 }
 .ideal-panel__hit:focus-visible{outline:2px solid #e8323a;outline-offset:-8px}
-/* Centre-bottom panel stacks icon over label; padding clears the
-   hexagon's lower point, which overhangs this panel. */
-.ideal-panel--7 .ideal-panel__hit{
-  flex-direction:column;justify-content:center;text-align:center;
-  gap:clamp(12px,1.2vw,18px);
-  padding-top:clamp(30px,3.4vw,58px);
-}
-
 .ideal-panel__icon{
   flex:0 0 auto;
-  width:clamp(50px,4.63vw,76px);height:clamp(50px,4.63vw,76px);
+  width:clamp(44px,5.4vw,86px);height:clamp(44px,5.4vw,86px);
   border-radius:50%;background:linear-gradient(160deg,#e5292f,#b81e25);color:#fff;
   display:grid;place-items:center;
-  box-shadow:0 6px 16px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.26);
+  box-shadow:0 6px 16px rgba(0,0,0,.6), 0 0 0 3px rgba(255,255,255,.10),
+             inset 0 1px 0 rgba(255,255,255,.26);
   transition:transform .35s ease,box-shadow .35s ease;
 }
 .ideal-panel__icon svg{width:54%;height:54%}
@@ -681,22 +989,17 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 .ideal-panel__label{
   /* 1.54% of board width in the artwork */
-  font-size:clamp(1rem,1.55vw,1.42rem);
-  font-weight:600;line-height:1.28;max-width:24ch;
+  font-size:clamp(.95rem,1.5vw,1.4rem);
+  font-weight:600;line-height:1.26;max-width:26ch;
   text-transform:uppercase;letter-spacing:.6px;color:#fff;
   text-shadow:0 2px 14px rgba(0,0,0,.8);
 }
-.ideal-panel--7 .ideal-panel__label{max-width:16ch}
 /* The red accent rule beneath every label */
 .ideal-panel__label::after{
   content:"";display:block;width:clamp(64px,6vw,104px);height:2px;
   margin-top:clamp(14px,1.5vw,24px);
   background:linear-gradient(90deg,#e8323a,rgba(232,50,58,0));
   transition:width .35s ease;
-}
-.ideal-panel--7 .ideal-panel__label::after{
-  margin-inline:auto;
-  background:linear-gradient(90deg,rgba(232,50,58,0),#e8323a,rgba(232,50,58,0));
 }
 .ideal-panel:hover .ideal-panel__label::after,
 .ideal-panel.is-open .ideal-panel__label::after{width:clamp(96px,9vw,150px)}
@@ -705,7 +1008,7 @@ button,input,select,textarea{font:inherit;color:inherit}
    0fr -> 1fr is the only way to animate to an unknown height without
    measuring it in JS. It overlays the panel so the grid does not reflow. */
 .ideal-panel__body{
-  position:absolute;left:0;right:0;bottom:0;z-index:3;
+  position:absolute;left:var(--edge);right:var(--edge);bottom:var(--edge);z-index:3;
   display:grid;grid-template-rows:0fr;transition:grid-template-rows .42s ease;
   background:linear-gradient(180deg,rgba(6,7,10,0),rgba(6,7,10,.96) 38%);
 }
@@ -720,58 +1023,72 @@ button,input,select,textarea{font:inherit;color:inherit}
 .ideal-panel__body a:hover{color:#fff}
 
 /* --- hexagon core ------------------------------------------------------
-   27.6% of the board's width, aspect 1.06 (wider than tall), centre 48%
-   down — so it overhangs the bottom of row 1 and the top of row 3, as the
-   artwork does. */
+   30% of the board's width, aspect 1.214, centre 48% down — so it overhangs
+   the bottom of row 1 and the top of row 3 and covers the inner third of the
+   middle row, as the artwork does. Flat top and bottom edges with points at
+   left and right: the artwork's hexagon is the opposite orientation to a
+   pointy-top one. */
 .ideals-core{
-  --hex:polygon(50% 0%,100% 26%,100% 74%,50% 100%,0% 74%,0% 26%);
+  --hex:polygon(22.5% 0,77.5% 0,100% 50%,77.5% 100%,22.5% 100%,0 50%);
   position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);
-  z-index:5;width:27.6%;aspect-ratio:1.06;pointer-events:none;
+  z-index:5;width:30%;aspect-ratio:1.214;pointer-events:none;
 }
 /* A slightly larger hexagon behind the plate reads as a bright red rim —
    clip-path crops outer shadows, so a border cannot do this job. */
 .ideals-core__ring{
-  position:absolute;inset:-2.6%;
+  position:absolute;inset:-2.4%;
   clip-path:var(--hex);
-  background:linear-gradient(158deg,#ff5158,#e03039 45%,#7e161c);
-  filter:drop-shadow(0 0 26px rgba(232,50,58,.9));
+  background:#ff2f38;
+  filter:drop-shadow(0 0 30px rgba(232,50,58,.85));
+}
+/* ...and a dark hexagon just inside it leaves that rim as a hairline with a
+   black channel between it and the plate, the way the artwork separates the
+   hexagon from the cards it sits on. */
+.ideals-core__ring::before{
+  content:"";position:absolute;inset:2px;clip-path:var(--hex);background:#0a0c11;
 }
 .ideals-core__hex{
-  --hex:polygon(50% 0%,100% 26%,100% 74%,50% 100%,0% 74%,0% 26%);
+  --hex:polygon(22.5% 0,77.5% 0,100% 50%,77.5% 100%,22.5% 100%,0 50%);
   position:relative;width:100%;height:100%;
   clip-path:var(--hex);
-  background:linear-gradient(157deg,#ee363e 0%,#d0252d 40%,#8d191f 100%);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.18),transparent 42%),
+    linear-gradient(157deg,#ee363e 0%,#d0252d 40%,#8d191f 100%);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:5% 12%;
+  text-align:center;padding:7% 17%;
   filter:drop-shadow(0 0 36px rgba(232,50,58,.7));
 }
+/* The inner rim is a white hexagon with a marginally smaller red one over
+   it. A border cannot draw this: clipping a bordered box to a hexagon keeps
+   only the two vertical edges, because the box has no border running along
+   the diagonals, so the outline comes out broken. Both pseudo-elements sit
+   below the text, which is already at z-index 2. */
 .ideals-core__hex::before{
-  content:"";position:absolute;inset:4.5%;clip-path:var(--hex);
-  border:1px solid rgba(255,255,255,.62);
+  content:"";position:absolute;inset:4.5%;z-index:0;clip-path:var(--hex);
+  background:rgba(255,255,255,.62);
 }
 .ideals-core__hex::after{
-  content:"";position:absolute;inset:0;clip-path:var(--hex);pointer-events:none;
-  background:linear-gradient(180deg,rgba(255,255,255,.18),transparent 42%);
+  content:"";position:absolute;inset:calc(4.5% + 1.5px);z-index:1;
+  clip-path:var(--hex);pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.18),transparent 42%),
+    linear-gradient(157deg,#ee363e 0%,#d0252d 40%,#8d191f 100%);
 }
 .ideals-core__dot{
   position:absolute;top:9%;left:50%;transform:translateX(-50%);
   width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.9);z-index:2}
-.ideals-core__num{
-  position:relative;z-index:2;
-  font-size:clamp(2.6rem,7vw,5.4rem);font-weight:700;line-height:.78;
-  letter-spacing:-3px;text-shadow:0 6px 24px rgba(0,0,0,.45)}
 .ideals-core__kicker{
   position:relative;z-index:2;
-  font-size:clamp(.62rem,1.2vw,1.08rem);letter-spacing:2.4px;text-transform:uppercase;
-  margin-top:10px;opacity:.96}
+  font-size:clamp(.66rem,2.15vw,1.9rem);letter-spacing:1.2px;text-transform:uppercase;
+  line-height:1.12;max-width:10ch;opacity:.96}
 .ideals-core__name{
   position:relative;z-index:2;
-  font-size:clamp(.95rem,2.6vw,2rem);font-weight:700;line-height:1;
+  font-size:clamp(1.05rem,2.95vw,2.6rem);font-weight:700;line-height:1;
   letter-spacing:.2px;text-transform:uppercase;margin-top:2px;
   text-shadow:0 3px 16px rgba(0,0,0,.42)}
 .ideals-core__mark{
-  position:relative;z-index:2;width:clamp(28px,3.6vw,56px);height:auto;
-  margin-top:clamp(8px,1.3vw,18px);opacity:.96}
+  position:relative;z-index:2;width:clamp(30px,5.3vw,80px);height:auto;
+  margin-top:clamp(8px,1.5vw,22px);opacity:.96}
 
 .ideals-core__star{
   position:absolute;top:50%;width:14px;height:14px;transform:translateY(-50%);
@@ -795,16 +1112,21 @@ button,input,select,textarea{font:inherit;color:inherit}
     display:flex;flex-direction:column;gap:10px;
     width:min(100% - 24px,560px);
   }
-  .ideal-panel{--cut:18px;order:2}
+  .ideal-panel{--cut:18px;order:2;aspect-ratio:auto}
   .ideal-panel__hit{height:auto;min-height:104px;padding:18px 22px}
+  .ideal-panel__hit,
+  .ideal-panel--2 .ideal-panel__hit,
+  .ideal-panel--4 .ideal-panel__hit,
+  .ideal-panel--6 .ideal-panel__hit{padding-left:22px}
   .ideal-panel__label{max-width:none;font-size:1rem}
-  .ideal-panel--7 .ideal-panel__hit{
-    flex-direction:row;text-align:left;padding-top:18px;justify-content:flex-start}
-  .ideal-panel--7 .ideal-panel__label{max-width:none}
-  .ideal-panel--7 .ideal-panel__label::after{
-    margin-inline:0;background:linear-gradient(90deg,#e8323a,rgba(232,50,58,0))}
+  /* relative, not static: the ring behind the plate is absolutely
+     positioned with inset:-2.6%. With the core static it resolved against
+     .ideals-board instead and blew up to 385x977, covering the whole
+     stacked board. relative keeps the core in flow and gives the ring
+     something to anchor to; left/top are cleared because the desktop rule
+     sets them for its absolute placement. */
   .ideals-core{
-    position:static;transform:none;order:1;
+    position:relative;left:auto;top:auto;transform:none;order:1;
     width:min(232px,60vw);margin:0 auto clamp(16px,4vw,26px);pointer-events:auto}
   .ideal-panel__wash{
     background:linear-gradient(100deg,rgba(6,7,10,.96) 0%,rgba(8,10,15,.84) 52%,rgba(10,13,19,.5) 100%)!important}
@@ -873,6 +1195,27 @@ button,input,select,textarea{font:inherit;color:inherit}
 .field__hint{font-size:.8rem;color:var(--muted)}
 .field__req{color:var(--red);font-weight:700}
 .field__opt{color:var(--muted);font-weight:400}
+
+/* --- membership fee panel ----------------------------------------------
+   The account details are the part a visitor copies into a banking app, so
+   they are set apart from the form's own fields rather than sitting among
+   them, and the values are laid out on a fixed column with tabular figures.
+   A BSB misread by one digit is money gone. */
+.pay__intro{margin:8px 0 16px;color:var(--muted);max-width:62ch}
+.pay__panel{
+  border:1px solid var(--line);border-left:4px solid var(--red);
+  border-radius:var(--radius);background:var(--paper);
+  padding:clamp(16px,2.2vw,26px);margin-bottom:26px}
+.pay__h{font-size:.78rem;letter-spacing:1.6px;text-transform:uppercase;
+  color:var(--red);margin:0 0 10px;font-weight:700}
+.pay__h--own{margin:0 0 12px}
+.pay__list{margin:0 0 20px;display:grid;gap:7px}
+.pay__list:last-of-type{margin-bottom:0}
+.pay__list>div{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.pay__list dt{flex:0 0 clamp(116px,26%,190px);color:var(--muted);font-size:.86rem}
+.pay__list dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums;
+  letter-spacing:.3px;overflow-wrap:anywhere}
+.pay__check,.pay__note{font-size:.84rem;color:var(--muted);margin:14px 0 0;max-width:62ch}
 .input,.select,.textarea{width:100%;padding:12px 14px;background:#fff;border:1px solid #d9cfcf;
   border-radius:10px;color:var(--ink);transition:.15s}
 .input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--red);
@@ -914,7 +1257,16 @@ button,input,select,textarea{font:inherit;color:inherit}
 .site-footer ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
 .f-brand{display:flex;align-items:center;gap:13px;margin-bottom:18px}
 .f-brand img{width:54px;height:54px;flex:none}
-.f-brand strong{display:block;color:#fff;font-size:1.3rem;line-height:1.05;letter-spacing:.4px}
+/* 1.02rem, not 1.24: the wordmark now carries three words, and at the old
+   size it broke after "MELBOURNE" and left "INC" stranded on a line of its
+   own. The footer column is ~279px wide once the emblem is taken off. */
+.f-brand strong{display:block;color:#fff;font-size:.96rem;line-height:1.15;letter-spacing:.6px;
+  text-transform:uppercase;
+  /* Where the column is too narrow for one line, balance the two rather than
+     letting the last word fall on its own: "JANASENA / MELBOURNE INC" reads
+     as a name, "JANASENA MELBOURNE / INC" reads as a mistake. Falls back to
+     ordinary wrapping where text-wrap is unsupported. */
+  text-wrap:balance}
 .f-brand small{display:block;margin-top:3px;font-size:.66rem;letter-spacing:2.4px;
   text-transform:uppercase;color:rgba(255,255,255,.66)}
 .f-symbol{display:flex;align-items:center;gap:14px;margin-top:18px}
@@ -967,7 +1319,6 @@ button,input,select,textarea{font:inherit;color:inherit}
    ========================================================================== */
 
 @keyframes m-rise    {from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
-@keyframes m-seal    {from{opacity:0;transform:scale(.72) rotate(-14deg)}to{opacity:1;transform:scale(1) rotate(0deg)}}
 @keyframes m-rise-sm {from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes m-pop     {from{opacity:0;transform:translateY(22px) scale(.965)}to{opacity:1;transform:none}}
 @keyframes m-fade    {from{opacity:0}to{opacity:1}}
@@ -983,11 +1334,6 @@ button,input,select,textarea{font:inherit;color:inherit}
   .hero .lede   {animation-delay:.29s}
   .hero-actions {animation-delay:.41s}
   .hero-dots    {animation-delay:.58s}
-  .hero-figure  {animation:m-rise 1.05s cubic-bezier(.22,.61,.36,1) .12s both}
-  /* The seal is centred with the independent `translate` property, so
-     these keyframes are free to own `transform` outright -- the two
-     compose instead of the animation knocking it out of position. */
-  .hero-symbol  {animation:m-seal 1.05s cubic-bezier(.22,.61,.36,1) .22s both}
 
   .page-banner .crumbs{animation:m-rise-sm .7s cubic-bezier(.22,.61,.36,1) .04s both}
   .page-banner h1     {animation:m-rise-sm .7s cubic-bezier(.22,.61,.36,1) .14s both}

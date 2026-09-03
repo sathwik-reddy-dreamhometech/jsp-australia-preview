@@ -46,16 +46,27 @@
     var burger = document.querySelector('[data-burger]');
     if (!burger) return;
 
+    function setMenu(open) {
+      document.body.dataset.menu = open ? 'open' : '';
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
     burger.addEventListener('click', function () {
-      var open = document.body.dataset.menu === 'open';
-      document.body.dataset.menu = open ? '' : 'open';
-      burger.setAttribute('aria-expanded', open ? 'false' : 'true');
+      setMenu(document.body.dataset.menu !== 'open');
     });
+
+    // The open panel covers the burger, so this is the only pointer route out.
+    var closer = document.querySelector('[data-nav-close]');
+    if (closer) {
+      closer.addEventListener('click', function () {
+        setMenu(false);
+        burger.focus();          // put focus back where it started
+      });
+    }
 
     document.addEventListener('keydown', function (ev) {
       if (ev.key === 'Escape' && document.body.dataset.menu === 'open') {
-        document.body.dataset.menu = '';
-        burger.setAttribute('aria-expanded', 'false');
+        setMenu(false);
         burger.focus();
       }
     });
@@ -314,7 +325,11 @@
     ['.ideals-core', 'core'],
     ['.ideal-panel', 'panel'],
     ['.ann-list>*,.ideal-row', 'alt'],
-    ['.cards>*', 'card'],
+    // Not cards inside the committee carousel: those sit off to the side of
+    // a horizontal scroller, so the observer never sees them and they would
+    // stay at opacity 0 for anyone who swiped across. The track reveals as
+    // one block instead (below).
+    ['.cards:not(.is-carousel)>*', 'card'],
     ['.gal-grid>*,.album-strip>*', 'tile'],
     ['.stats>*', 'pop'],
     ['.split .media,.about-figure', 'frame'],
@@ -322,6 +337,11 @@
     ['.section--red .wrap>*', 'up'],
     ['.site-footer .f-grid>*', 'up'],
     ['.f-disclaimer,.f-bottom', 'fade'],
+    // The carousel track is deliberately NOT revealed. Its cards are already
+    // excluded (they sit off-screen sideways), so a reveal on the track would
+    // be the one animation standing between the visitor and the whole
+    // section -- if it failed to fire, the committee would simply be blank.
+    // The section heading above it carries the motion instead.
     ['.gal-scroller', 'up'],
     ['.album-tabs,.album-block__head,.video-embed,.form,.notice,.empty,.prose>.lede', 'up']
   ];
@@ -452,6 +472,232 @@
     window.requestAnimationFrame(frame);
   }
 
+  /* --- committee strip ---------------------------------------------------
+     Two behaviours over one grid, chosen by width, so only one thing ever
+     owns the element:
+
+       phones   scroll-snap carousel with pagination dots, advancing a card
+                at a time. Stacked, four members is a long scroll past
+                three people you have already read.
+       wider    a strip that scrolls of its own accord. There the row
+                already fits, so there is nothing to swipe to and a dot per
+                card would point at cards that are all on screen anyway.
+
+     Both are added here rather than in the markup, so a page without
+     JavaScript keeps the plain grid instead of a row of dead buttons.
+
+     The carousel's auto-advance stops for good the moment someone swipes,
+     taps a dot or tabs in -- once a visitor is steering, movement under
+     them is an obstacle. The strip only pauses, since there is no
+     destination to steer to and stopping it for good would strand the
+     clones mid-loop. Neither runs while the tab is hidden or under
+     prefers-reduced-motion. */
+  function initCommitteeCarousel() {
+    var track = document.querySelector('[data-committee]');
+    if (!track) return;
+
+    var cards = Array.prototype.slice.call(track.querySelectorAll('.member'));
+    if (cards.length < 2) return;
+
+    var narrow = window.matchMedia('(max-width: 760px)');
+    var still  = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var DWELL  = 4500;
+    var SPEED  = 0.42;                  // px per frame, ~25px a second
+
+    var dots = null, timer = null, stopped = false, on = false;
+    var clones = null, marquee = false, carry = 0, holdUntil = 0;
+    var hovering = false, focused = false;
+
+    function index() {
+      var mid = track.scrollLeft + track.clientWidth / 2;
+      var best = 0, gap = Infinity;
+      cards.forEach(function (card, i) {
+        var c = card.offsetLeft - track.offsetLeft + card.offsetWidth / 2;
+        var d = Math.abs(c - mid);
+        if (d < gap) { gap = d; best = i; }
+      });
+      return best;
+    }
+
+    function paint() {
+      if (!dots) return;
+      var at = index();
+      Array.prototype.forEach.call(dots.children, function (dot, i) {
+        dot.setAttribute('aria-current', i === at ? 'true' : 'false');
+      });
+    }
+
+    function goto(i) {
+      var card = cards[i];
+      if (!card) return;
+      track.scrollTo({
+        left: card.offsetLeft - track.offsetLeft
+              - (track.clientWidth - card.offsetWidth) / 2,
+        behavior: 'smooth'
+      });
+    }
+
+    function tick() { goto((index() + 1) % cards.length); }
+
+    function start() {
+      if (timer || stopped || still.matches) return;
+      timer = window.setInterval(function () {
+        if (!document.hidden) tick();
+      }, DWELL);
+    }
+    function halt() { window.clearInterval(timer); timer = null; }
+    function stop() { stopped = true; halt(); }
+
+    function build() {
+      dots = document.createElement('div');
+      dots.className = 'committee-dots';
+      dots.setAttribute('role', 'tablist');
+      dots.setAttribute('aria-label', track.getAttribute('data-dots-label') || 'Committee');
+      cards.forEach(function (card, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-current', i === 0 ? 'true' : 'false');
+        var name = card.querySelector('h3');
+        b.setAttribute('aria-label', name ? name.textContent.trim() : String(i + 1));
+        b.addEventListener('click', function () { stop(); goto(i); });
+        dots.appendChild(b);
+      });
+      track.parentNode.insertBefore(dots, track.nextSibling);
+    }
+
+    function enable() {
+      if (on) return;
+      on = true;
+      track.classList.add('is-carousel');
+      if (!dots) build(); else dots.hidden = false;
+      paint();
+      start();
+    }
+
+    function disable() {
+      if (!on) return;
+      on = false;
+      track.classList.remove('is-carousel');
+      if (dots) dots.hidden = true;
+      halt();
+    }
+
+    /* --- the strip --- */
+
+    function addSet() {
+      cards.forEach(function (card) {
+        var copy = card.cloneNode(true);
+        copy.setAttribute('aria-hidden', 'true');   // the same people twice
+        clones.push(copy);
+        track.appendChild(copy);
+      });
+    }
+
+    // How far to rewind at the seam: the offset to the first clone, which
+    // is one set of members plus the gap after it. Not the scroll width
+    // over the number of sets -- the strip is padded, and that padding
+    // would put the rewind slightly out and let the loop drift.
+    function span() {
+      return clones && clones.length
+        ? clones[0].offsetLeft - cards[0].offsetLeft
+        : 0;
+    }
+
+    // Copy until there is at least one whole set of scrolling still to do.
+    // That is the invariant the loop turns on: with four members on a wide
+    // screen a single set is narrower than the viewport, scrollLeft can
+    // never travel far enough to reach the seam, and the strip just runs to
+    // its end and sits there. Tested against the measured scroll range
+    // rather than a card count, since gaps, padding and a wrapped label all
+    // move the arithmetic. The 8px is slack so a stray sub-pixel cannot
+    // leave it one short.
+    function fill() {
+      if (!clones) clones = [];
+      if (!clones.length) addSet();
+      var guard = 0;
+      while (span() > 0 &&
+             track.scrollWidth - track.clientWidth < span() + 8 &&
+             guard++ < 8) {
+        addSet();
+      }
+    }
+
+    function rolling() {
+      return marquee && !still.matches && !hovering && !focused &&
+             !document.hidden && Date.now() > holdUntil;
+    }
+
+    function frame() {
+      if (rolling()) {
+        carry += SPEED;
+        var whole = Math.floor(carry);
+        if (whole) {
+          carry -= whole;
+          track.scrollLeft += whole;
+        }
+        var loop = span();
+        if (loop > 0 && track.scrollLeft >= loop) track.scrollLeft -= loop;
+      }
+      window.requestAnimationFrame(frame);
+    }
+
+    function enableMarquee() {
+      if (marquee) return;
+      marquee = true;
+      track.classList.add('is-marquee');
+      fill();
+    }
+
+    function disableMarquee() {
+      if (!marquee) return;
+      marquee = false;
+      track.classList.remove('is-marquee');
+      if (clones) clones.forEach(function (copy) {
+        if (copy.parentNode) copy.parentNode.removeChild(copy);
+      });
+      clones = null;
+      track.scrollLeft = 0;
+    }
+
+    track.addEventListener('scroll', function () {
+      if (!marquee) { paint(); return; }
+      var loop = span();
+      if (loop > 0 && track.scrollLeft >= loop) track.scrollLeft -= loop;
+    }, { passive: true });
+
+    ['pointerdown', 'touchstart', 'wheel', 'keydown'].forEach(function (ev) {
+      track.addEventListener(ev, function () {
+        if (marquee) holdUntil = Date.now() + 4000; else stop();
+      }, { passive: true });
+    });
+
+    track.addEventListener('mouseenter', function () { hovering = true; });
+    track.addEventListener('mouseleave', function () { hovering = false; });
+    track.addEventListener('focusin', function () {
+      focused = true;
+      if (!marquee) stop();
+    });
+    track.addEventListener('focusout', function () { focused = false; });
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) halt(); else start();
+    });
+
+    function apply(isNarrow) {
+      if (isNarrow) { disableMarquee(); enable(); }
+      else          { disable(); enableMarquee(); }
+    }
+
+    // The cards are sized in vw, so a resize changes how many copies the
+    // loop needs. fill() only ever adds, and stops once there are enough.
+    window.addEventListener('resize', function () { if (marquee) fill(); });
+
+    narrow.addEventListener('change', function (e) { apply(e.matches); });
+    apply(narrow.matches);
+    window.requestAnimationFrame(frame);
+  }
+
+
   function ready(fn) {
     if (document.readyState !== 'loading') fn();
     else document.addEventListener('DOMContentLoaded', fn);
@@ -463,6 +709,7 @@
     initHero();
     initIdeals();
     initStatCounts();
+    initCommitteeCarousel();
     initReveals();
     initGalleryStrip();
     initVideoFacades();

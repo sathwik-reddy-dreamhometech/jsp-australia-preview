@@ -1,0 +1,42 @@
+# =====================================================================
+#  uploads/.htaccess — PHP execution DENIED.
+#
+#  Everything in here arrived from a browser upload. Even though
+#  app/upload.php validates the MIME type with finfo and re-encodes each
+#  image through GD (which destroys any embedded payload), this file is
+#  the backstop: if a script ever lands here, it must be served as bytes,
+#  never executed. PLAN.md §8.
+# =====================================================================
+
+Options -Indexes -ExecCGI
+
+# Classic mod_php
+<IfModule mod_php.c>
+  php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+  php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+  php_flag engine off
+</IfModule>
+
+# LiteSpeed / suPHP / FastCGI hosts ignore php_flag, so also strip the
+# handlers and refuse the extensions outright.
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .phps .cgi .pl .py
+RemoveType    .php .phtml .php3 .php4 .php5 .php7 .php8 .phps
+
+<FilesMatch "\.(php|phtml|php[0-9]|phps|cgi|pl|py|sh|htaccess|htpasswd)$">
+  Require all denied
+</FilesMatch>
+
+# Only serve what we actually put here.
+<FilesMatch "\.(jpe?g|png|webp|gif|svg)$">
+  Require all granted
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  # An SVG is a document, not just a picture — never let one run inline.
+  Header set Content-Security-Policy "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox"
+</IfModule>
