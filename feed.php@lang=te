@@ -5,21 +5,14 @@
     <link>http://localhost/announcements.php</link>
     <description>జనసేన ఆస్ట్రేలియా నుండి వార్తలు, సమాచారం.</description>
     <language>te-IN</language>
-    <lastBuildDate>Thu, 03 Sep 2026 17:46:38 +1000</lastBuildDate>
+    <lastBuildDate>Fri, 04 Sep 2026 11:29:48 +1000</lastBuildDate>
     <atom:link href="http://localhost/feed.php" rel="self" type="application/rss+xml"/>
     <item>
-      <title>మెల్‌బోర్న్</title>
-      <link>http://localhost/announcement.php?slug=jk&amp;lang=te</link>
-      <guid isPermaLink="true">http://localhost/announcement.php?slug=jk&amp;lang=te</guid>
-      <pubDate>Tue, 25 Aug 2026 20:07:00 +1000</pubDate>
-      <description>n</description>
-    </item>
-    <item>
-      <title>మెల్‌బోర్న</title>
-      <link>http://localhost/announcement.php?slug=wn&amp;lang=te</link>
-      <guid isPermaLink="true">http://localhost/announcement.php?slug=wn&amp;lang=te</guid>
-      <pubDate>Tue, 25 Aug 2026 17:16:00 +1000</pubDate>
-      <description>wq</description>
+      <title>నూతనంగా ఎన్నికైన కార్యనిర్వాహక కమిటీ</title>
+      <link>http://localhost/announcement.php?slug=new-executive-committee&amp;lang=te</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=new-executive-committee&amp;lang=te</guid>
+      <pubDate>Thu, 03 Sep 2026 18:00:00 +1000</pubDate>
+      <description>జనసేన మెల్‌బోర్న్ ఇంక్. తన నూతన కార్యనిర్వాహక కమిటీని గర్వంగా ప్రకటిస్తోంది.</description>
     </item>
     <item>
       <title>మెల్‌బోర్న్ మహానాడు 2026</title>
@@ -29,11 +22,18 @@
       <description>సంస్కృతి, ఐక్యత, సేవలను పురస్కరించుకుని జరిగే మహా సమావేశానికి తెలుగు సమాజాన్ని ఆహ్వానిస్తున్నాము.</description>
     </item>
     <item>
-      <title>సభ్యత్వ నమోదు ప్రారంభం</title>
-      <link>http://localhost/announcement.php?slug=demo-membership-open&amp;lang=te</link>
-      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-membership-open&amp;lang=te</guid>
-      <pubDate>Sun, 02 Aug 2026 20:08:40 +1000</pubDate>
-      <description>2026–27 సంవత్సరానికి కొత్త సభ్యత్వ నమోదు ప్రారంభమైంది.</description>
+      <title>రక్తదాన శిబిరానికి నమోదులు ప్రారంభం</title>
+      <link>http://localhost/announcement.php?slug=blood-donation-drive-registrations&amp;lang=te</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=blood-donation-drive-registrations&amp;lang=te</guid>
+      <pubDate>Thu, 03 Sep 2026 18:10:00 +1000</pubDate>
+      <description>వచ్చే సంవత్సరం జనసేన రక్తదాన శిబిరాన్ని నిర్వహించాలని యోచిస్తున్నాం. ఇప్పుడే మీ ఆసక్తిని నమోదు చేసుకోండి.</description>
+    </item>
+    <item>
+      <title>సభ్యత్వ నమోదులు ఇప్పుడు ప్రారంభమయ్యాయి</title>
+      <link>http://localhost/announcement.php?slug=membership-enrolments-open&amp;lang=te</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=membership-enrolments-open&amp;lang=te</guid>
+      <pubDate>Thu, 03 Sep 2026 18:05:00 +1000</pubDate>
+      <description>విద్యార్థి, వ్యక్తిగత, కుటుంబ సభ్యత్వాలు అందుబాటులో ఉన్నాయి. ఈరోజే చేరండి.</description>
     </item>
     <item>
       <title>శీతాకాల సేవా కార్యక్రమం</title>
@@ -41,13 +41,6 @@
       <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-winter-appeal&amp;lang=te</guid>
       <pubDate>Wed, 15 Jul 2026 20:08:40 +1000</pubDate>
       <description>మా శీతాకాల విరాళ కార్యక్రమాన్ని విజయవంతం చేసిన ప్రతి ఒక్కరికీ ధన్యవాదాలు.</description>
-    </item>
-    <item>
-      <title>నూతన కార్యవర్గం ఎన్నిక</title>
-      <link>http://localhost/announcement.php?slug=demo-new-committee&amp;lang=te</link>
-      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-new-committee&amp;lang=te</guid>
-      <pubDate>Thu, 25 Jun 2026 20:08:40 +1000</pubDate>
-      <description>The organisation proudly announces the appointment of its new executive committee for the coming term.</description>
     </item>
   </channel>
 </rss>

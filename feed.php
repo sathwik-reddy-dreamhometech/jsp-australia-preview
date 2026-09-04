@@ -5,21 +5,14 @@
     <link>http://localhost/announcements.php</link>
     <description>News and notices from Janasena Australia.</description>
     <language>en-AU</language>
-    <lastBuildDate>Thu, 03 Sep 2026 17:46:37 +1000</lastBuildDate>
+    <lastBuildDate>Fri, 04 Sep 2026 11:29:47 +1000</lastBuildDate>
     <atom:link href="http://localhost/feed.php" rel="self" type="application/rss+xml"/>
     <item>
-      <title>jk</title>
-      <link>http://localhost/announcement.php?slug=jk</link>
-      <guid isPermaLink="true">http://localhost/announcement.php?slug=jk</guid>
-      <pubDate>Tue, 25 Aug 2026 20:07:00 +1000</pubDate>
-      <description>mj</description>
-    </item>
-    <item>
-      <title>wn</title>
-      <link>http://localhost/announcement.php?slug=wn</link>
-      <guid isPermaLink="true">http://localhost/announcement.php?slug=wn</guid>
-      <pubDate>Tue, 25 Aug 2026 17:16:00 +1000</pubDate>
-      <description>qw</description>
+      <title>Newly elected Executive Committee</title>
+      <link>http://localhost/announcement.php?slug=new-executive-committee</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=new-executive-committee</guid>
+      <pubDate>Thu, 03 Sep 2026 18:00:00 +1000</pubDate>
+      <description>Janasena Melbourne Inc. proudly announces the appointment of its new Executive Committee.</description>
     </item>
     <item>
       <title>Melbourne Mahanadu 2026 — save the date</title>
@@ -29,11 +22,18 @@
       <description>Janasena Australia invites the Telugu community to a grand gathering celebrating culture, unity and service.</description>
     </item>
     <item>
-      <title>Membership enrolments now open</title>
-      <link>http://localhost/announcement.php?slug=demo-membership-open</link>
-      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-membership-open</guid>
-      <pubDate>Sun, 02 Aug 2026 20:08:40 +1000</pubDate>
-      <description>New membership enrolments are open for the 2026–27 year. Join a growing network of Telugu families across Australia.</description>
+      <title>Registrations open for our blood donation drive</title>
+      <link>http://localhost/announcement.php?slug=blood-donation-drive-registrations</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=blood-donation-drive-registrations</guid>
+      <pubDate>Thu, 03 Sep 2026 18:10:00 +1000</pubDate>
+      <description>We are planning a Janasena Blood Donation Drive next year. Register your interest now.</description>
+    </item>
+    <item>
+      <title>Membership enrolments are now open</title>
+      <link>http://localhost/announcement.php?slug=membership-enrolments-open</link>
+      <guid isPermaLink="true">http://localhost/announcement.php?slug=membership-enrolments-open</guid>
+      <pubDate>Thu, 03 Sep 2026 18:05:00 +1000</pubDate>
+      <description>Student, individual and family memberships are open. Join us today.</description>
     </item>
     <item>
       <title>Winter charity drive raises $8,400</title>
@@ -41,13 +41,6 @@
       <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-winter-appeal</guid>
       <pubDate>Wed, 15 Jul 2026 20:08:40 +1000</pubDate>
       <description>Thank you to every volunteer and donor who made our winter appeal for local shelters a success.</description>
-    </item>
-    <item>
-      <title>New executive committee elected</title>
-      <link>http://localhost/announcement.php?slug=demo-new-committee</link>
-      <guid isPermaLink="true">http://localhost/announcement.php?slug=demo-new-committee</guid>
-      <pubDate>Thu, 25 Jun 2026 20:08:40 +1000</pubDate>
-      <description>The organisation proudly announces the appointment of its new executive committee for the coming term.</description>
     </item>
   </channel>
 </rss>

@@ -1,0 +1,1570 @@
+/* ==========================================================================
+   Janasena Australia — public site styles
+   Palette sampled from janasenaparty.org: red #C8232A, emblem #D42026,
+   white, ink #141414. Poppins for Latin, Noto Sans Telugu for Telugu.
+   Hand-written, mobile-first, no build step.
+   ========================================================================== */
+
+:root{
+  /* Palette — official Janasena branding */
+  --red:#c8232a;        /* primary: nav bar, buttons, links */
+  --red-mark:#d42026;   /* emblem red */
+  --red-cta:#c1392d;    /* call-to-action panels */
+  --red-mid:#b3262e;    /* gradient mid */
+  --red-deep:#842d35;   /* gradient deep */
+  --red-dark:#480e12;   /* gradient floor */
+
+  --ink:#141414; --black:#000; --muted:#6b6360;
+  --paper:#f7f4f4; --line:#e6dcdc; --white:#fff;
+
+  --shadow:0 6px 24px rgba(60,10,10,.10);
+  --shadow-lg:0 18px 48px rgba(60,10,10,.18);
+  --wrap:1180px; --radius:14px;
+
+  --ff:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --ff-te:"Noto Sans Telugu","Poppins",sans-serif;
+
+  /* Kept so older utility classes still resolve */
+  --sp-2:.5rem; --sp-3:.75rem; --sp-4:1rem; --sp-5:1.5rem; --sp-6:2rem; --sp-7:3rem;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+body{
+  margin:0;font-family:var(--ff);color:var(--ink);background:var(--white);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block;height:auto}
+a{color:var(--red);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3,h4{line-height:1.2;margin:0 0 .5em;font-weight:700}
+p,ul,ol{margin:0 0 1em}
+button,input,select,textarea{font:inherit;color:inherit}
+:lang(te),.te{font-family:var(--ff-te);line-height:1.5}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 20px}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+
+.sr-only,.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip-link{position:absolute;left:-9999px;top:0;z-index:999;background:var(--ink);color:#fff;padding:12px 18px}
+.skip-link:focus{left:0}
+/* Honeypot — off-screen rather than display:none, which some bots skip */
+.hp{position:absolute;left:-5000px;width:1px;height:1px;overflow:hidden}
+
+/* ---------------------------------------------------------------- topbar */
+.topbar{background:var(--black);color:#e6e0df;font-size:.82rem}
+.topbar .wrap{display:flex;gap:16px;align-items:center;justify-content:space-between;min-height:38px;flex-wrap:wrap}
+.topbar a{color:#e9e3e1}
+.topbar__contact{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.social{display:flex;gap:14px;align-items:center}
+.social a{display:inline-flex;width:26px;height:26px;align-items:center;justify-content:center;
+  border:1px solid #333;border-radius:50%;transition:.18s}
+.social a:hover{background:var(--red);border-color:var(--red);text-decoration:none}
+.social svg{width:13px;height:13px;fill:currentColor}
+
+.lang-switch{display:inline-flex;align-items:center;gap:6px;border:1px solid #333;border-radius:999px;
+  padding:3px 12px;font-size:.78rem;font-weight:500;white-space:nowrap;transition:.18s}
+.lang-switch:hover{background:var(--red);border-color:var(--red);color:#fff;text-decoration:none}
+.lang-switch svg{width:13px;height:13px}
+
+/* ---------------------------------------------------------------- header */
+.site-header{position:sticky;top:0;z-index:60;background:var(--red);box-shadow:var(--shadow)}
+.site-header>.wrap{display:flex;align-items:stretch;justify-content:space-between;gap:20px;min-height:78px;
+  max-width:none;padding:0}
+
+/* white angled plate carrying the emblem — mirrors janasenaparty.org */
+/* The banner the official logo sits on, reproduced as a gradient so the
+   emblem sits ON the line rather than beside it. Proportions are measured
+   off the artwork: relative to the emblem's height the band is a 2.2%
+   rule, a 10.7% bar, a 2.2% rule and a 2% black line, which at a 54px
+   emblem gives the pixel offsets below.
+
+   background-size stops the band partway into the gap before the wordmark
+   (left padding + the 54px emblem + 7px). Run edge to edge it struck
+   through "Janasena" at x-height and put the black line through
+   MELBOURNE - AUSTRALIA, which read as deleted text. */
+.brand{display:flex;align-items:center;gap:14px;
+
+  /* ------------------------------------------------------------------
+     THE LOGO SIZE LIVES HERE. Change --emblem and everything follows:
+     the mark itself, the thickness of the banner behind it, and where
+     the banner stops before the wordmark. Nothing else needs touching.
+     ------------------------------------------------------------------ */
+  --emblem:48px;
+
+  /* The left padding is a variable because --run-l is derived from it: the
+     banner has to stop in the gap after the emblem, and if the two are set
+     independently they drift apart and the rules strike through the
+     wordmark. Change the padding here, or in a media query, and the band
+     follows it. */
+  --pad-l:clamp(20px,4vw,54px);
+
+  /* The banner from the official artwork, as fractions of the emblem's
+     height (measured off the source: a 2.2% rule, a 10.7% bar, a 2.2%
+     rule and a 2% black line). Expressed against --emblem so the band
+     stays in proportion whatever size the mark is set to. */
+  --banner:linear-gradient(to bottom,
+    transparent calc(50% - .112 * var(--emblem)),
+    #d81616    calc(50% - .112 * var(--emblem)), #d81616 calc(50% - .091 * var(--emblem)),
+    transparent calc(50% - .091 * var(--emblem)),
+    transparent calc(50% - .081 * var(--emblem)),
+    #d81616    calc(50% - .081 * var(--emblem)), #d81616 calc(50% + .025 * var(--emblem)),
+    transparent calc(50% + .025 * var(--emblem)),
+    transparent calc(50% + .036 * var(--emblem)),
+    #d81616    calc(50% + .036 * var(--emblem)), #d81616 calc(50% + .057 * var(--emblem)),
+    transparent calc(50% + .057 * var(--emblem)),
+    transparent calc(50% + .102 * var(--emblem)),
+    #000       calc(50% + .102 * var(--emblem)), #000 calc(50% + .121 * var(--emblem)),
+    transparent calc(50% + .121 * var(--emblem)));
+
+  /* left run: in from the edge, behind the mark, stopping 6px into the
+     gap. right run: picks up again inside the plate's right padding. */
+  --run-l:calc(var(--pad-l) + var(--emblem) + 6px);
+  /* The right band has to stay inside the right padding, or it runs into
+     the end of the wordmark and strikes through it -- which is what the
+     third word made happen. Derived, like --run-l, so the two cannot
+     drift: every breakpoint below already used padding minus 8. */
+  --pad-r:62px;
+  --run-r:max(0px, calc(var(--pad-r) - 8px));
+
+  background-color:var(--white);
+  background-image:var(--banner),var(--banner);
+  background-repeat:no-repeat,no-repeat;
+  background-size:var(--run-l) 100%,var(--run-r) 100%;
+  background-position:left center,right center;
+  padding:10px var(--pad-r) 10px var(--pad-l);position:relative;flex:0 0 auto;
+  clip-path:polygon(0 0,100% 0,calc(100% - 46px) 100%,0 100%)}
+.brand:hover{text-decoration:none}
+/* right:0, not an inset: the plate is clipped on the diagonal, so running
+   the rules to its edge lets the clip end them exactly where the red
+   masthead begins. Held 38px short they stopped in white. */
+.brand::before,.brand::after{content:"";position:absolute;left:0;right:0;height:4px;background:var(--red-mark)}
+.brand::before{top:9px}
+.brand::after{bottom:9px}
+.brand img{height:var(--emblem);width:auto}
+/* Set uppercase here rather than storing "JANASENA" in the setting: the
+   value stays naturally cased for anyone editing it in the admin, and
+   Telugu is unaffected because the script has no case. Uppercase needs
+   more tracking than mixed case to stop the letters crowding. */
+.brand-text strong{display:block;font-size:1.06rem;letter-spacing:1.4px;line-height:1.1;
+  text-transform:uppercase;color:var(--red-mark)}
+/* Centred under the wordmark rather than ranged left: the line above it is
+   now three words, and a single short word hanging off its left edge read
+   as a stray rather than part of the lockup. */
+.brand-text span{display:block;font-size:.68rem;letter-spacing:2.2px;color:var(--ink);
+  text-transform:uppercase;text-align:center}
+
+.nav{display:flex;align-items:center;gap:2px;padding-right:clamp(16px,3vw,40px)}
+.nav a{padding:10px 13px;border-radius:6px;font-size:.9rem;font-weight:500;color:#fff;white-space:nowrap}
+.nav a:hover{background:rgba(255,255,255,.16);color:#fff;text-decoration:none}
+.nav a[aria-current="page"]{color:#fff;background:rgba(0,0,0,.24)}
+.has-sub{position:relative}
+.has-sub>button{all:unset;cursor:pointer;padding:10px 13px;border-radius:6px;font-size:.9rem;
+  font-weight:500;font-family:inherit;display:inline-flex;gap:5px;align-items:center;color:#fff}
+.has-sub>button:hover{background:rgba(255,255,255,.16)}
+.sub{position:absolute;top:calc(100% + 6px);left:0;min-width:210px;background:var(--white);
+  border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow-lg);padding:6px;
+  display:none;flex-direction:column}
+.has-sub[data-open="true"] .sub{display:flex}
+.sub a{padding:9px 12px;font-size:.88rem;color:var(--ink)}
+.sub a:hover{background:var(--paper);color:var(--red)}
+
+/* Language menu ---------------------------------------------------------
+   A <details> styled to match the Gallery dropdown. `list-style:none` plus
+   the WebKit marker rule remove the native disclosure triangle so the
+   chevron in the markup is the only one shown. */
+.lang-menu{position:relative}
+.lang-menu>summary{
+  list-style:none;cursor:pointer;display:inline-flex;gap:5px;align-items:center;
+  padding:10px 13px;border-radius:6px;font-size:.9rem;font-weight:500;color:#fff}
+.lang-menu>summary::-webkit-details-marker{display:none}
+.lang-menu>summary::marker{content:""}
+.lang-menu>summary:hover{background:rgba(255,255,255,.16)}
+.lang-menu[open]>.sub{display:flex}
+.lang-menu .sub{min-width:150px;right:0;left:auto}
+/* the language you are already reading */
+.sub a[aria-current]{color:var(--red);font-weight:600}
+
+.btn-cta{background:var(--white);color:var(--red)!important;padding:11px 22px;border-radius:4px;
+  font-weight:600;font-size:.88rem;margin-left:8px}
+.btn-cta:hover{background:var(--ink);color:#fff!important;text-decoration:none}
+.burger{all:unset;display:none;cursor:pointer;padding:10px 20px;font-size:1.5rem;line-height:1;color:#fff;align-self:center}
+.nav__head{display:none}
+
+/* Between the drawer breakpoint and a roomy desktop the masthead is tight:
+   eight nav links, a CTA, and a brand plate that now names the city as well
+   as the country. Tighten what costs width here rather than raising the
+   drawer breakpoint, which would hand laptops a burger menu they don't need.
+   Scoped to `.nav > a` so the Gallery dropdown keeps its own padding. */
+@media(min-width:1161px) and (max-width:1439px){
+  /* The wordmark now carries the city and the entity suffix as well as the
+     name, which added ~124px to the plate and pushed this band into
+     overflow. Everything below gives that back: the wordmark itself comes
+     down a step, the plate's padding tightens, and the nav gives up a few
+     more pixels per link.
+
+     The band runs to 1439 rather than 1340: at full size the plate and the
+     nav together need 1366px, so 1341-1439 could not carry them either.
+     Measured at the boundary, not guessed. */
+  .brand{--pad-r:60px;--pad-l:clamp(16px,2.4vw,34px)}
+  .brand-text strong{font-size:.92rem;letter-spacing:.7px}
+  .brand-text span{font-size:.6rem;letter-spacing:1.1px}
+  /* Fluid, not a flat squeeze. A single step compressed 1161 and 1439 by
+     the same amount, but only the bottom of the band is actually short of
+     room: at 1280 there were 173 unused pixels and at 1439 there were 328,
+     and the nav looked crowded through all of it for no reason. These ease
+     from the tightest workable spacing at 1161 to the full values by 1440,
+     where the unprefixed rules take over at the same numbers -- so there is
+     no jump at the boundary. */
+  .nav{gap:clamp(0px,calc(.72vw - 8.3px),2px);padding-right:clamp(6px,calc(12.2vw - 135.6px),40px)}
+  .nav>a,.has-sub>button{
+    padding:10px clamp(7px,calc(2.15vw - 18px),13px);
+    font-size:clamp(.83rem,calc(.4vw + 8.6px),.9rem);
+  }
+  .btn-cta{
+    padding:clamp(10px,calc(.36vw + 5.8px),11px) clamp(13px,calc(3.23vw - 24.5px),22px);
+    margin-left:clamp(2px,calc(2.15vw - 23px),8px);
+  }
+}
+
+/* Small phones: brand plate + the header's 20px flex gap + burger all have
+   to fit the viewport. 470, not 420: at full size that sum is 453px, so
+   the widths just above the old breakpoint could not carry it either. */
+@media(max-width:470px){
+  /* The wordmark carries three words here, not one, and it shares a 390px
+     screen with the burger. Sized so the plate plus the burger still fit
+     the narrowest phones -- measured, not estimated. */
+  .brand{gap:9px;--pad-r:14px;--pad-l:14px}
+  .brand-text strong{font-size:.74rem;letter-spacing:.2px}
+  .brand-text span{font-size:.54rem;letter-spacing:.8px}
+  .burger{padding:10px 12px}
+}
+/* 1160, not 1040: eight top-level links, a CTA and a brand plate naming
+   both city and country need about 1160px before they stop colliding. The
+   drawer is a better answer there than a nav squeezed until it is unreadable. */
+@media(max-width:1160px){
+  .burger{display:block}
+  /* no angled edge here, so the right run is just the padding less a gap */
+  .brand{clip-path:none;--pad-r:26px}
+  .brand::before,.brand::after{right:0}
+  .nav a,.has-sub>button{color:var(--ink)}
+  .nav a:hover,.has-sub>button:hover{background:var(--paper);color:var(--red)}
+  .nav a[aria-current="page"]{background:#fdf0ef;color:var(--red)}
+  .btn-cta{background:var(--red);color:#fff!important}
+  .nav{position:fixed;inset:0 0 0 auto;width:min(320px,84vw);background:#fff;flex-direction:column;
+    align-items:stretch;padding:0 16px 24px;transform:translateX(102%);transition:.28s;
+    box-shadow:var(--shadow-lg);overflow-y:auto;z-index:70}
+  /* Sticky, so the mark and the close button stay put while a long menu
+     scrolls underneath them. */
+  .nav__head{display:flex;align-items:center;justify-content:center;position:sticky;top:0;z-index:2;
+    background:#fff;padding:16px 0 14px;margin-bottom:8px;border-bottom:1px solid var(--line)}
+  .nav__head img{width:48px;height:48px}
+  .nav__close{all:unset;position:absolute;left:0;top:50%;translate:0 -50%;
+    width:42px;height:42px;display:grid;place-items:center;cursor:pointer;
+    font-size:1.7rem;line-height:1;color:var(--ink);border-radius:8px;
+    transition:background-color .2s ease,color .2s ease}
+  .nav__close:hover{background:var(--paper);color:var(--red)}
+  .nav__close:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+  body[data-menu="open"] .nav{transform:none}
+  .nav a,.has-sub>button{width:100%;padding:13px 12px}
+  .sub{position:static;display:flex;box-shadow:none;border:0;padding:0 0 0 12px}
+  .lang-menu>summary{color:var(--ink);width:100%;padding:13px 12px}
+  .lang-menu>summary:hover{background:var(--paper);color:var(--red)}
+  .lang-menu .sub{min-width:0}
+  .btn-cta{text-align:center;margin-top:10px}
+}
+
+/* After the 1160 block on purpose: on a small phone both media queries
+   match, and
+   with equal specificity the later rule wins. Declared earlier, the small
+   phone's shorter banner was silently overridden and the left run pushed
+   7px under the wordmark. */
+@media(max-width:470px){
+  .brand{--emblem:40px}
+}
+
+/* Narrowest phones still in use (320px). One more step down: at the 470
+   sizing the plate, the header's flex gap and the burger came to 321px
+   against the 305px such a screen actually has. After the block above for
+   the same reason -- equal specificity, later rule wins. */
+@media(max-width:360px){
+  .brand{--emblem:34px;gap:7px;--pad-l:10px;--pad-r:10px}
+  .brand-text strong{font-size:.68rem;letter-spacing:.1px}
+  .brand-text span{font-size:.5rem;letter-spacing:.6px}
+}
+
+/* ---------------------------------------------------------------- hero */
+/* One background, and only one: the crowd photograph. The deep-red ground
+   and the red gradient wash that used to sit over it are both gone, so no
+   colour is laid on top of the picture.
+
+   #0c0a11 is sampled from the darkest part of the photograph itself. It is
+   not a design colour -- it only shows in the moment before the image
+   arrives, so the hero never flashes white behind white text.
+
+   image-set() serves WebP where it is understood and falls back to the
+   JPEG; the plain background-image above it covers browsers that do not
+   know image-set() at all. */
+.hero{position:relative;min-height:clamp(420px,58vw,620px);display:grid;align-items:center;
+  color:#fff;overflow:hidden;
+  /* The picture itself is set inline on the element, so its URL carries a
+     ?v=<mtime> stamp and a replaced file is actually re-fetched. Only the
+     ground colour and the sizing live here. */
+  background:#0c0a11 center/cover no-repeat;
+}
+/* width:100% matters: .hero is a grid, so with `margin:0 auto` from .wrap
+   and no width the item shrink-wraps its content and centres, which is
+   what held the copy out in the middle of the hero while the election
+   seal sat to its left. Filling the track puts the text on the same left
+   edge as every other section on the page. */
+.hero .wrap{position:relative;z-index:2;width:100%;padding-block:64px}
+.hero .eyebrow{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);
+  padding:6px 15px;border-radius:999px;font-size:.74rem;letter-spacing:2.2px;text-transform:uppercase;
+  margin-bottom:18px;color:#fff}
+.hero h1{font-size:clamp(1.42rem,4.6vw,3.3rem);margin-bottom:.35em;max-width:24ch;
+  /* The floor is what phones get: 4.6vw does not overtake it until ~493px.
+     It is set by the longest line the headline's own break leaves rather
+     than chosen for its own sake -- at the old 1.9rem, 'Janasena Melbourne
+     INC,' needed 402px against the 305px a 360px phone has, so it wrapped
+     again and left 'INC,' orphaned on a line of its own. */
+  /* 24ch, not 19: the headline carries its own break now, so the cap only
+     has to clear the longest line that break leaves -- 'Janasena Melbourne
+     INC,' is 23 characters. Any narrower and the text wraps again and the
+     break lands in the wrong place. */
+  text-shadow:0 3px 22px rgba(0,0,0,.4)}
+.hero .lede{font-size:clamp(1rem,1.7vw,1.22rem);max-width:46ch;opacity:.95;margin-bottom:28px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+/* The background photograph is stored in its own colours, so the legibility
+   of the white copy lives here rather than being baked into the file. That
+   keeps the asset a photograph -- swap it and this still holds -- and lets
+   the wash be tuned without re-encoding anything.
+
+   Weighted to the left, because that is the only side the copy occupies:
+   the right of the frame keeps most of its brightness. Strength is measured
+   rather than picked: against this photograph a lighter wash left about 5%
+   of the text area below a 3:1 ratio, which is a white flag showing through
+   behind a word.
+
+   position:absolute matters -- .hero is a grid, so a static pseudo-element
+   would become a stray grid item and push the layout around, exactly as a
+   static <picture> would. */
+.hero::before{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 78% 82% at 50% 48%, transparent 38%, rgba(0,0,0,.30) 100%),
+    linear-gradient(90deg, rgba(0,0,0,.72) 0%, rgba(0,0,0,.60) 38%, rgba(0,0,0,.50) 52%, rgba(0,0,0,.12) 100%);
+}
+/* Narrow screens: the copy runs nearly the full width, so a wash that fades
+   out to the right would leave the end of the paragraph unprotected. */
+@media(max-width:820px){
+  .hero::before{
+    background:
+      radial-gradient(ellipse 90% 90% at 50% 48%, transparent 42%, rgba(0,0,0,.26) 100%),
+      linear-gradient(90deg, rgba(0,0,0,.70) 0%, rgba(0,0,0,.58) 100%);
+  }
+}
+@media(max-width:760px){
+  .hero{min-height:min(86vh,660px)}
+  .hero .wrap{padding-block:clamp(36px,7vw,56px)}
+}
+.hero-dots{position:absolute;bottom:22px;left:0;right:0;z-index:3;display:flex;gap:9px;justify-content:center}
+
+.hero-dots button{all:unset;cursor:pointer;width:11px;height:11px;border-radius:50%;
+  background:rgba(255,255,255,.42);transition:.2s}
+.hero-dots button[aria-selected="true"]{background:#fff;width:30px;border-radius:999px}
+
+/* ---------------------------------------------------------------- buttons */
+.btn{display:inline-block;padding:13px 26px;border-radius:999px;font-weight:600;font-size:.92rem;
+  border:2px solid transparent;cursor:pointer;text-align:center}
+.btn:hover{text-decoration:none}
+.btn--solid{background:var(--red-cta);color:#fff}
+.btn--solid:hover{background:#fff;color:var(--red)}
+.btn--ghost{border-color:rgba(255,255,255,.6);color:#fff;background:transparent}
+.btn--ghost:hover{background:#fff;color:var(--red);border-color:#fff}
+.btn--dark{background:var(--ink);color:#fff}
+.btn--dark:hover{background:var(--red);color:#fff}
+.btn--outline{border-color:var(--line);color:var(--ink);background:#fff}
+.btn--outline:hover{border-color:var(--red);color:var(--red)}
+.btn--sm{padding:9px 18px;font-size:.84rem}
+.btn--lg{padding:15px 32px;font-size:1rem}
+.btn--block{display:block;width:100%}
+.btn[disabled],.btn[aria-busy="true"]{opacity:.6;cursor:not-allowed}
+.section--red .btn--solid{background:#fff;color:var(--red)}
+.section--red .btn--solid:hover{background:var(--ink);color:#fff}
+
+/* ---------------------------------------------------------------- leader strip */
+/* White, not paper: the About block below it is on paper, and two light
+   bands running together lose the boundary between the hero and the first
+   real section. */
+.leaders{background:var(--white);border-bottom:1px solid var(--line);padding:26px 0}
+.leaders-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px}
+/* One card in an auto-fit grid stretches across the whole wrap, which turns
+   the founder credit into a billboard. Cap and centre it instead. */
+.leaders-grid--solo{grid-template-columns:minmax(0,190px);justify-content:center}
+.leader{text-align:center}
+.leader .ph{aspect-ratio:4/5;border-radius:12px;background:
+  linear-gradient(160deg,var(--red-mark) 0%,var(--red-dark) 100%);
+  border:4px solid #fff;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.leader .ph img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.leader .ph[data-empty]::after{content:"PHOTO";position:absolute;inset:auto 0 12px;color:rgba(255,255,255,.5);
+  font-size:.68rem;letter-spacing:2px}
+.leader strong{display:block;margin-top:10px;font-size:.94rem}
+.leader small{color:var(--muted);font-size:.78rem;display:block}
+
+/* ---------------------------------------------------------------- sections */
+.section{padding:clamp(48px,7vw,86px) 0}
+.section--paper{background:var(--paper)}
+.section--red{background:linear-gradient(135deg,var(--red-mid),var(--red-deep));color:#fff}
+.section--red .eyebrow,.section--red h2{color:#fff}
+.section--red a{color:#fff}
+.section-head{max-width:660px;margin-bottom:38px}
+.section-head.center{margin-inline:auto;text-align:center}
+/* .rule is a block; centring the text alone left it hanging on the left. */
+.section-head.center .rule{margin-inline:auto}
+.eyebrow{display:block;font-size:.76rem;letter-spacing:3px;text-transform:uppercase;
+  color:var(--red);font-weight:600;margin-bottom:10px}
+.section h2{font-size:clamp(1.5rem,3.1vw,2.2rem)}
+.rule{display:block;width:64px;height:4px;background:var(--red);border-radius:2px;margin-top:14px}
+.section--red .rule{background:#fff}
+.center .rule{margin-inline:auto}
+
+/* ---------------------------------------------------------------- announcements */
+.ann-list{display:grid;gap:16px}
+.ann{display:flex;gap:18px;background:#fff;border:1px solid var(--line);border-left:5px solid var(--red-mark);
+  border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow);transition:.2s}
+.ann:hover{box-shadow:var(--shadow-lg)}
+.ann .date{flex:0 0 66px;text-align:center;border-right:1px solid var(--line);padding-right:14px}
+.ann .date b{display:block;font-size:1.6rem;line-height:1;color:var(--red)}
+.ann .date span{font-size:.72rem;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted)}
+.ann h3{font-size:1.06rem;margin-bottom:.35em}
+.ann h3 a{color:var(--ink)}
+.ann h3 a:hover{color:var(--red)}
+.ann p{margin:0;color:var(--muted);font-size:.93rem}
+.pin{display:inline-block;background:var(--ink);color:#fff;font-size:.66rem;font-weight:700;
+  letter-spacing:1.2px;padding:3px 9px;border-radius:4px;margin-left:8px;vertical-align:2px}
+
+/* ---------------------------------------------------------------- cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:24px}
+/* Homepage previews. 290px only fits three tracks in the wrap, so a
+   four-member committee wrapped to 3 + 1 orphan. A narrower minimum fits
+   all four; auto-fit collapses the tracks it does not need, so three or
+   two members still fill the row evenly instead of leaving a hole. */
+.cards--compact{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+
+/* --- committee carousel (phones) ---------------------------------------
+   Stacked, four members is a long scroll past three people you have
+   already read. Across, it is one swipe. The class is added by script, so
+   the grid above stays the fallback when the script does not run. */
+@media(max-width:760px){
+  .cards--compact.is-carousel{
+    display:flex;gap:14px;
+    overflow-x:auto;overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory;
+    scrollbar-width:none;-ms-overflow-style:none;
+    padding-bottom:4px}
+  .cards--compact.is-carousel::-webkit-scrollbar{display:none}
+  /* 84%, not 100%: the sliver of the next card is what tells people there
+     is more to swipe to. */
+  .cards--compact.is-carousel>.member{flex:0 0 84%;scroll-snap-align:center}
+}
+
+/* --- committee marquee (above the phone breakpoint) ---------------------
+   Wide enough for the row to fit, there is nothing left to swipe to, so the
+   same grid becomes a strip that scrolls of its own accord. The script
+   clones the members to close the loop and adds the class, so a page
+   without JavaScript keeps the plain grid.
+
+   The vertical padding is for the cards' own shadow: setting overflow-x
+   computes overflow-y to auto as well, and without the room the shadow is
+   clipped along the top and bottom edges. */
+@media(min-width:761px){
+  .cards--compact.is-marquee{
+    display:flex;gap:24px;
+    overflow-x:auto;overscroll-behavior-x:contain;
+    scrollbar-width:none;-ms-overflow-style:none;
+    padding:6px 0 12px;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 4%,#000 96%,transparent 100%);
+            mask-image:linear-gradient(90deg,transparent 0,#000 4%,#000 96%,transparent 100%);
+  }
+  .cards--compact.is-marquee::-webkit-scrollbar{display:none}
+  .cards--compact.is-marquee>.member{flex:0 0 clamp(212px,19vw,268px)}
+}
+
+.committee-dots{display:flex;justify-content:center;gap:9px;margin-top:20px}
+.committee-dots button{
+  all:unset;box-sizing:border-box;width:9px;height:9px;border-radius:999px;cursor:pointer;
+  background:rgba(0,0,0,.2);transition:background-color .25s ease,width .25s ease}
+.committee-dots button[aria-current="true"]{background:var(--red);width:26px}
+.committee-dots button:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow);display:flex;flex-direction:column;transition:.2s}
+.card:hover{box-shadow:var(--shadow-lg)}
+.card .thumb{aspect-ratio:16/10;overflow:hidden;background:var(--paper);display:block}
+.card .thumb img{width:100%;height:100%;object-fit:cover;transition:.4s}
+.card:hover .thumb img{transform:scale(1.05)}
+.card .body{padding:20px 22px 24px;flex:1;display:flex;flex-direction:column}
+.card .meta{font-size:.76rem;letter-spacing:1.6px;text-transform:uppercase;color:var(--red);
+  font-weight:600;margin-bottom:8px}
+.card h3{font-size:1.1rem}
+.card h3 a{color:var(--ink)}
+.card h3 a:hover{color:var(--red)}
+.card p{color:var(--muted);font-size:.92rem;margin:0 0 16px}
+.card .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;
+  gap:12px;font-size:.82rem;color:var(--muted)}
+
+/* event date chip used on cards and lists */
+.datechip{background:var(--red);color:#fff;border-radius:10px;text-align:center;padding:10px 6px;
+  flex:0 0 62px;line-height:1.1}
+.datechip b{display:block;font-size:1.5rem}
+.datechip span{font-size:.68rem;letter-spacing:1.4px;text-transform:uppercase;opacity:.9}
+
+/* --- upcoming event rows ------------------------------------------------
+   The poster sits beside the details rather than above them. Event flyers
+   are portrait, and one rendered at the full width of the text column ran
+   to well over a thousand pixels tall, pushing the date, venue and RSVP --
+   the things somebody actually came for -- off the bottom of the screen.
+
+   The two-column template is on a modifier, not the base class: without a
+   cover image there is no first child, and the body would otherwise drop
+   into the narrow media track. */
+.event-row__main{flex:1;min-width:0}
+.event-row__main--with-media{
+  display:grid;grid-template-columns:clamp(170px,25%,280px) minmax(0,1fr);
+  gap:clamp(16px,2vw,28px);align-items:start}
+.event-row__media{
+  display:block;border-radius:12px;overflow:hidden;
+  border:1px solid var(--line);background:var(--paper);
+  transition:box-shadow .2s ease,translate .2s ease}
+.event-row__media:hover{box-shadow:var(--shadow-lg);translate:0 -2px;text-decoration:none}
+.event-row__media img{display:block;width:100%;height:auto}
+.event-row__body>p{margin-bottom:6px}
+
+@media(max-width:720px){
+  /* Stacked, but the poster is still capped: full-bleed on a phone it is
+     taller than the screen. */
+  .event-row__main--with-media{grid-template-columns:minmax(0,1fr)}
+  .event-row__media{max-width:300px}
+}
+
+/* ---------------------------------------------------------------- gallery */
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.gal-item{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:4/3;margin:0;
+  background:var(--paper);box-shadow:var(--shadow);cursor:zoom-in;border:0;padding:0;display:block}
+.gal-item img{width:100%;height:100%;object-fit:cover;transition:.45s}
+.gal-item:hover img{transform:scale(1.07)}
+.gal-item figcaption{position:absolute;inset:auto 0 0;padding:26px 14px 12px;color:#fff;font-size:.84rem;
+  text-align:left;background:linear-gradient(transparent,rgba(20,0,0,.82));opacity:0;transition:.25s}
+.gal-item:hover figcaption,.gal-item:focus-visible figcaption{opacity:1}
+/* --- album index --------------------------------------------------------
+   A heading and a strip of real thumbnails per album, instead of one big
+   cover card. Tiles are a fixed size, so a chapter with a single album
+   looks the same as one with twenty. */
+.album-block{margin-bottom:clamp(34px,4vw,48px)}
+.album-block:last-of-type{margin-bottom:0}
+.album-block__head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
+  padding-bottom:12px;margin-bottom:16px;border-bottom:1px solid var(--line)}
+.album-block__head h2{font-size:1.12rem;line-height:1.3;margin:0 0 3px}
+.album-block__head h2 a{color:var(--ink)}
+.album-block__head h2 a:hover{color:var(--red)}
+.album-block__meta{display:block;font-size:.71rem;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--red);font-weight:600}
+.album-block__all{flex:none;font-size:.83rem;font-weight:600;white-space:nowrap;color:var(--red)}
+.album-block__all::after{content:" →"}
+.album-block__all:hover{text-decoration:none;opacity:.75}
+
+/* auto-fill rather than auto-fit: an album holding two photos should stay
+   two compact tiles, not stretch them into two billboards across the page.
+   That stretch is what made the old one-card-per-album index so overbearing. */
+.album-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+
+.album-more{position:relative;aspect-ratio:4/3;border-radius:12px;overflow:hidden;
+  display:grid;place-items:center;background:var(--red-dark);color:#fff;
+  box-shadow:var(--shadow);text-align:center}
+.album-more img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:.34;transition:.45s}
+.album-more span{position:relative;font-size:1.15rem;font-weight:700;letter-spacing:.5px}
+.album-more:hover,.album-more:focus-visible{text-decoration:none;color:#fff}
+.album-more:hover img{transform:scale(1.07);opacity:.26}
+
+.empty--soft{color:var(--muted);font-size:.9rem;margin:0}
+
+@media(max-width:520px){
+  .album-strip{grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
+  .album-block__head{flex-direction:column;align-items:flex-start;gap:6px}
+}
+
+
+/* --- auto-scrolling gallery strip --------------------------------------
+   Full-bleed: the strip sits outside .wrap so it runs the whole width and
+   reads as motion passing through, not a boxed widget.
+
+   The soft edges are a mask rather than a gradient overlay, so whatever the
+   section background happens to be shows through -- an overlay would need
+   to be repainted every time that background changed. */
+.gal-scroller{position:relative}
+.gal-scroller__viewport{
+  display:flex;gap:16px;overflow-x:auto;overscroll-behavior-x:contain;
+  padding:8px clamp(16px,5vw,60px);
+  scrollbar-width:none;-ms-overflow-style:none;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 5%,#000 95%,transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 5%,#000 95%,transparent 100%);
+}
+.gal-scroller__viewport::-webkit-scrollbar{display:none}
+.gal-scroller__viewport:focus-visible{outline:3px solid var(--red);outline-offset:-3px}
+
+.gal-scroller__item{
+  flex:0 0 auto;width:clamp(210px,24vw,310px);aspect-ratio:4/3;margin:0}
+
+/* Controls sit over the strip, out of the way of the photographs. */
+.gal-scroller__nav{
+  position:absolute;z-index:3;border:0;cursor:pointer;color:#fff;
+  background:rgba(20,16,16,.62);backdrop-filter:blur(3px);
+  display:grid;place-items:center;
+  transition:background-color .2s ease,scale .2s ease,opacity .2s ease}
+.gal-scroller__nav:hover{background:var(--red);scale:1.06}
+.gal-scroller__nav:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+
+.gal-scroller__nav{top:50%;translate:0 -50%;width:44px;height:44px;border-radius:50%;
+  font-size:1.5rem;line-height:1;padding-bottom:3px}
+.gal-scroller__nav--prev{left:clamp(6px,2vw,26px)}
+.gal-scroller__nav--next{right:clamp(6px,2vw,26px)}
+
+@media(max-width:620px){
+  /* The arrows used to be hidden here on the reasoning that swiping was the
+     better control. Keeping them: a visitor who has not realised the strip
+     scrolls has nothing to tell them, and the arrows are also the only
+     control a keyboard reaches. Smaller and tighter to the edges so they
+     sit over the tiles rather than on top of the pictures. */
+  .gal-scroller__nav{width:36px;height:36px;font-size:1.25rem;padding-bottom:2px}
+  .gal-scroller__nav--prev{left:5px}
+  .gal-scroller__nav--next{right:5px}
+  .gal-scroller__item{width:clamp(180px,62vw,240px)}
+}
+
+.album-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px}
+.album-tabs a{border:1px solid var(--line);background:#fff;padding:8px 17px;border-radius:999px;
+  font-size:.86rem;color:var(--ink)}
+.album-tabs a:hover{border-color:var(--red);color:var(--red);text-decoration:none}
+.album-tabs a[aria-current="page"]{background:var(--red);color:#fff;border-color:var(--red)}
+
+/* lightbox */
+.lightbox{position:fixed;inset:0;z-index:200;background:rgba(12,4,4,.94);display:none;
+  align-items:center;justify-content:center;padding:24px}
+.lightbox[data-open="true"]{display:flex}
+.lightbox figure{margin:0}
+.lightbox img{max-width:min(1100px,94vw);max-height:82vh;border-radius:8px;box-shadow:0 20px 70px rgba(0,0,0,.6)}
+.lightbox figcaption{color:#f4eceb;text-align:center;margin-top:14px;font-size:.9rem}
+.lightbox button{position:absolute;top:0;bottom:0;width:82px;all:unset;cursor:pointer;color:#fff;
+  font-size:2.4rem;display:flex;align-items:center;justify-content:center}
+.lb-prev{left:0}.lb-next{right:0}
+.lb-close{position:absolute!important;top:16px;right:20px;bottom:auto;width:auto;font-size:2.2rem}
+
+/* video */
+.video-embed{position:relative;aspect-ratio:16/9;background:var(--ink);border-radius:12px;overflow:hidden}
+.video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video-embed__facade{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;cursor:pointer;background:none}
+.video-embed__facade img{width:100%;height:100%;object-fit:cover}
+.video-embed__play{position:absolute;inset:0;margin:auto;width:68px;height:68px;border-radius:50%;
+  background:var(--red);color:#fff;display:grid;place-items:center;font-size:1.4rem;pointer-events:none;
+  box-shadow:0 8px 26px rgba(0,0,0,.4)}
+
+/* ---------------------------------------------------------------- about split */
+.split{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,60px);align-items:center}
+@media(max-width:860px){.split{grid-template-columns:1fr}}
+.split .media{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-lg)}
+/* minmax(0,…) rather than plain 1fr: a 1fr track cannot shrink below its
+   content's min-content width, which makes narrow layouts fragile. Same
+   three columns, no min-width floor. */
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:30px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 14px;text-align:center}
+.section--red .stat{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.2)}
+.stat b{display:block;font-size:1.7rem;color:var(--red)}
+.section--red .stat b{color:#fff}
+.stat span{font-size:.76rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted)}
+.section--red .stat span{color:rgba(255,255,255,.8)}
+
+/* --- about page ---------------------------------------------------------
+   Two columns: a framed photograph carrying a pull-quote on the left, the
+   reading column on the right. The photograph column is the narrower of the
+   two — a portrait needs height, not width, and giving it the wider track
+   pushes the reading column into a ribbon. */
+.about-lead{display:grid;grid-template-columns:.78fr 1.22fr;gap:clamp(28px,4.4vw,64px);
+  align-items:start}
+@media(max-width:980px){.about-lead{grid-template-columns:1fr;gap:38px}}
+
+.about-lead__media{position:relative;isolation:isolate}
+
+/* The dot field behind the top-left corner of the frame. Drawn rather than
+   shipped: it is a 16px grid of 2px dots, which costs nothing and scales. */
+.about-lead__dots{
+  position:absolute;left:-26px;top:-26px;width:132px;height:132px;z-index:0;
+  background-image:radial-gradient(var(--line) 1.6px,transparent 1.6px);
+  background-size:15px 15px;opacity:.85;pointer-events:none}
+
+/* A white card holding the photograph, so the quote below it sits on the
+   same plate rather than floating over the page. */
+.about-lead__frame{
+  position:relative;z-index:1;
+  background:#fff;border-radius:20px;padding:clamp(10px,1.1vw,16px);
+  box-shadow:0 26px 60px rgba(24,10,12,.16)}
+.about-lead__frame picture{display:block}
+.about-lead__frame img{display:block;width:100%;height:auto;
+  /* 8:9 (0.889), narrower than the source's 900x950 (0.947). object-fit:cover
+     fills the box and crops whatever overflows, so a box WIDER than the
+     source loses the top and bottom — and the lettering on the lectern runs
+     to the foot of the frame, so that is exactly what gets thrown away. A
+     narrower box keeps the full height and trims the sides instead, which
+     costs only the outer edges of the emblem behind him. */
+  aspect-ratio:8/9;object-fit:cover;object-position:center center;
+  border-radius:14px}
+
+/* The pull-quote overlaps the foot of the photograph. Negative margin rather
+   than absolute positioning, so the card's own height still pushes the frame
+   down and nothing is clipped when the text runs long in either language.
+
+   A PERCENTAGE, not a vw clamp. Percentage margins resolve against the
+   containing block's WIDTH, and the photograph is locked to 4:5 — so -16% of
+   the width is always 12.8% of the photograph's height, at every size. The
+   vw version this replaces covered 31% of the picture on a desktop and 18%
+   on a phone.
+
+   Only -4%: the lettering on the lectern ends at 97% of the photograph's
+   height, so the card can overlap the foot of the picture but cannot eat
+   into it. Anything deeper and the word జనసేన goes. */
+.about-quote{
+  position:relative;margin:-3.4% 0 0;
+  background:linear-gradient(158deg,var(--red-dark) 0%,#5d1218 100%);
+  color:#fff;border-radius:16px;
+  padding:clamp(22px,2.4vw,32px);
+  box-shadow:0 20px 44px rgba(24,10,12,.34)}
+.about-quote__mark{
+  display:grid;place-items:center;width:42px;height:42px;border-radius:50%;
+  background:rgba(255,255,255,.14);color:#fff;margin-bottom:16px}
+.about-quote__mark svg{width:20px;height:20px}
+.about-quote__head{
+  font-size:clamp(1.02rem,1.5vw,1.28rem);font-weight:700;line-height:1.42;
+  margin:0 0 16px}
+.about-quote__rule{display:block;width:46px;height:2px;background:rgba(255,255,255,.62);
+  margin-bottom:16px}
+.about-quote figcaption{font-size:.92rem;line-height:1.7;color:rgba(255,255,255,.86)}
+
+@media(max-width:980px){
+  .about-lead__media{max-width:520px;margin-inline:auto}
+}
+
+.about-lead__copy .prose p:last-child{margin-bottom:0}
+
+/* --- the four cards ---
+   auto-fit rather than a fixed pair of columns: one or three cards should
+   fill the row instead of leaving a hole, since each is dropped when its
+   setting is emptied. */
+.about-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));
+  gap:clamp(14px,1.3vw,18px);margin-top:clamp(26px,3vw,36px)}
+.about-tile{
+  display:flex;gap:16px;align-items:flex-start;
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:clamp(18px,1.8vw,24px);
+  transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+.about-tile:hover{border-color:rgba(200,35,42,.34);box-shadow:0 14px 30px rgba(24,10,12,.09);
+  transform:translateY(-2px)}
+.about-tile__icon{
+  flex:0 0 auto;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;
+  background:rgba(200,35,42,.11);color:var(--red)}
+.about-tile__icon svg{width:25px;height:25px}
+.about-tile h3{font-size:1rem;margin:2px 0 .45em;color:var(--ink)}
+.about-tile p{margin:0;font-size:.88rem;line-height:1.62;color:var(--muted)}
+
+/* --- the join panel ---
+   Same row as the cards visually, but a tinted ground and a button, because
+   it is the one block on the page asking for something. */
+.about-join{
+  display:flex;gap:clamp(16px,1.8vw,22px);align-items:center;flex-wrap:wrap;
+  background:rgba(200,35,42,.06);border:1px solid rgba(200,35,42,.16);
+  border-radius:16px;padding:clamp(18px,2vw,26px);
+  margin-top:clamp(14px,1.3vw,18px)}
+.about-join__icon{
+  flex:0 0 auto;display:grid;place-items:center;width:56px;height:56px;border-radius:50%;
+  background:var(--red-dark);color:#fff}
+.about-join__icon svg{width:27px;height:27px}
+.about-join__body{flex:1 1 260px;min-width:0}
+.about-join__body h3{font-size:1.02rem;margin:0 0 .4em;color:var(--ink)}
+.about-join__body p{margin:0;font-size:.88rem;line-height:1.62;color:var(--muted)}
+.about-join__cta{
+  flex:0 0 auto;display:inline-flex;align-items:center;gap:9px;
+  background:var(--red-dark);padding:12px 22px;font-size:.88rem}
+.about-join__cta:hover{background:var(--ink);color:#fff}
+.about-join__cta span{font-size:1.15rem;line-height:1;translate:0 -1px}
+
+@media(max-width:520px){
+  .about-join{flex-direction:column;align-items:flex-start}
+  .about-join__cta{width:100%;justify-content:center}
+}
+
+.about-lead__stats{margin-top:clamp(34px,4vw,52px)}
+
+/* ---------------------------------------------------------------- committee */
+/* The structure chart. A wide diagram of small type, so it is capped at a
+   readable width, framed like a document rather than bled to the edges, and
+   linked to the full-size file -- at phone width the names inside it cannot
+   be read however carefully the page scales it. */
+.org-chart{margin:0;max-width:1060px;margin-inline:auto}
+.org-chart a{display:block;border-radius:var(--radius);overflow:hidden;
+  border:1px solid var(--line);background:#fff;box-shadow:var(--shadow);
+  transition:box-shadow .2s ease,transform .2s ease}
+.org-chart a:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.org-chart img{display:block;width:100%;height:auto}
+.org-chart figcaption{margin-top:12px;text-align:center;font-size:.84rem;color:var(--muted)}
+.member{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow);text-align:center;padding-bottom:22px;transition:.2s}
+.member:hover{box-shadow:var(--shadow-lg)}
+.member .ph{aspect-ratio:4/5;background:linear-gradient(160deg,var(--red-mark),var(--red-dark));overflow:hidden}
+.member .ph img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.member h3{font-size:1.05rem;margin:18px 18px .2em}
+.member .role{color:var(--red);font-weight:600;font-size:.82rem;letter-spacing:1.4px;
+  text-transform:uppercase;margin:0 18px 10px}
+.member p{color:var(--muted);font-size:.88rem;margin:0 18px}
+
+/* The committee page carries eighteen cards, not the three or four the
+   shared .cards grid was sized for, and at a 290px track they came out
+   364px wide with a 453px photograph on top -- a 3,700px wall of portrait
+   frames, most of them still the empty gradient. A narrower track fits four
+   to a row and takes about a fifth off each card.
+
+   Scoped to this page: .cards is also the events, video gallery and
+   announcements grid, where the wider track is right. */
+.page-committee .cards{grid-template-columns:repeat(auto-fit,minmax(232px,1fr))}
+
+/* ---------------------------------------------------------------- ideals */
+/* "Core values of Janasena" board.
+   Proportions measured off the party artwork, whose board is 1678 x 906:
+     cards        834 x 285, so aspect 2.93. Two columns split the board
+                  with a 9px gutter; the rows are 11px apart.
+     hexagon      30% of board width, aspect 1.214, centred 48% down. Flat
+                  top and bottom edges with points at left and right, and it
+                  is drawn OVER the cards rather than sitting in a channel
+                  between them -- which is what lets the cards fill the
+                  board. It covers the inner third of each one, so the
+                  content in every card is padded in to clear it.
+     corner cut   ~55px on that card, all four corners
+     label type   3.6% of card width
+     icon circle  32% of card height */
+
+.ideals-band{
+  position:relative;isolation:isolate;
+  padding:clamp(48px,6.5vw,84px) 0 clamp(42px,5.5vw,72px);
+  background:
+    radial-gradient(ellipse 50% 44% at 50% 48%, rgba(200,35,42,.20), transparent 66%),
+    linear-gradient(168deg,#1a1e26 0%,#0d0f14 52%,#07080b 100%);
+  color:#fff;overflow:hidden;
+}
+.ideals-band::after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse 78% 70% at 50% 50%, transparent 52%, rgba(0,0,0,.55) 100%);
+}
+.ideals-band__head{max-width:660px;margin:0 auto clamp(26px,3.4vw,40px);padding:0 20px;text-align:center}
+.ideals-band__head .eyebrow{color:#ff9095}
+.ideals-band__head h2{color:#fff;font-size:clamp(1.5rem,3.1vw,2.2rem)}
+.ideals-band__head .rule{background:var(--red);margin-inline:auto}
+.ideals-band__foot{margin:clamp(28px,3.6vw,44px) 20px 0}
+
+/* --- board ------------------------------------------------------------ */
+.ideals-board{
+  position:relative;
+  display:grid;
+  /* Two columns that all but meet in the middle. The hexagon is not a gap
+     in the grid: it is positioned over the cards and overlaps them, which
+     is what lets the cards run to 2.93 and fill the board as the artwork
+     does. Measured off the artwork at 1678px wide: cards 834x285, a 9px
+     gutter between the columns and 11px between the rows. */
+  grid-template-columns:repeat(2,1fr);
+  gap:clamp(6px,.64vw,11px);
+  width:min(100% - 32px,1560px);
+  margin-inline:auto;
+}
+/* Row 1 — two halves meeting at the centre seam */
+/* Row 1 used to run the full width, which left its inner edges out of line
+   with rows 2 and 3 and made the board look ragged. All six panels are now
+   the same nine columns, so the channel the hexagon sits in runs straight
+   down the middle and every card is the same size. */
+.ideal-panel--1{grid-column:1; grid-row:1}
+.ideal-panel--2{grid-column:2; grid-row:1}
+/* Row 2 — a 25% channel down the middle for the hexagon */
+.ideal-panel--3{grid-column:1; grid-row:2}
+.ideal-panel--4{grid-column:2; grid-row:2}
+/* Row 3 — the middle panel sits directly beneath the hexagon */
+/* Row 3 is two panels flanking the channel the hexagon sits in. It used
+   to carry a narrow seventh panel between them; with six values that
+   slot is gone and the hexagon has the space to itself. */
+.ideal-panel--5{grid-column:1; grid-row:3}
+.ideal-panel--6{grid-column:2; grid-row:3}
+
+/* --- panels ----------------------------------------------------------- */
+.ideal-panel{
+  --cut:clamp(16px,3.3vw,51px);
+  --edge:2px;
+  --glow:#ff3b43;
+  /* All four corners cut, ~55px on the artwork's 834x285 card. */
+  --shape:polygon(var(--cut) 0,calc(100% - var(--cut)) 0,
+                  100% var(--cut),100% calc(100% - var(--cut)),
+                  calc(100% - var(--cut)) 100%,var(--cut) 100%,
+                  0 calc(100% - var(--cut)),0 var(--cut));
+  position:relative;overflow:hidden;
+  aspect-ratio:2.93;
+  /* The frame is the panel's own ground, revealed as a --edge band by every
+     layer above being inset and re-clipped to the same shape. An inset
+     box-shadow cannot do this job twice over: it paints beneath the panel's
+     children, and clipping a rectangle's shadow to this outline erases the
+     stretch running along each diagonal. Four corner gradients rather than
+     flat red, because the artwork's outline burns bright at the corners and
+     falls away to near-dark at the middle of each edge. */
+  background:
+    radial-gradient(46% 150% at 0 0,       var(--glow) 0%, rgba(232,50,58,0) 72%),
+    radial-gradient(46% 150% at 100% 0,    var(--glow) 0%, rgba(232,50,58,0) 72%),
+    radial-gradient(46% 150% at 100% 100%, var(--glow) 0%, rgba(232,50,58,0) 72%),
+    radial-gradient(46% 150% at 0 100%,    var(--glow) 0%, rgba(232,50,58,0) 72%),
+    #3a1519;
+  clip-path:var(--shape);
+  /* drop-shadow, not box-shadow: clip-path crops an outer box-shadow away,
+     but a filter shadow follows the clipped outline, so the glow traces the
+     notched edge instead of a rectangle. */
+  filter:drop-shadow(0 0 9px rgba(232,50,58,.22));
+  transition:filter .35s ease;
+}
+/* The dark interior. Also the ground for a 'contain' image, whose mask fades
+   to transparent on the label side — without this it would fade to red. */
+.ideal-panel::before{
+  content:"";position:absolute;inset:var(--edge);z-index:0;
+  background:#0d0f15;clip-path:var(--shape);
+  box-shadow:inset 0 0 34px rgba(200,35,42,.14);
+}
+.ideal-panel__art{
+  position:absolute;inset:var(--edge);z-index:0;display:block;
+  clip-path:var(--shape);
+  background-image:var(--bg);background-size:cover;background-position:center;
+  opacity:.92;transform:scale(1.01);
+  filter:saturate(.6) brightness(.72);
+  transition:opacity .5s ease,transform 1.2s ease;
+}
+/* 'contain': show the whole image instead of cropping it to fill. Anchored
+   away from the label, so the graphic sits clear of the text rather than
+   underneath it. The panel's own dark ground fills the remainder. */
+.ideal-panel.is-contain .ideal-panel__art{
+  background-size:contain;background-repeat:no-repeat;background-position:right center;
+  /* A contained image stops partway across the panel, leaving a hard
+     vertical edge where it meets the panel ground. Fading the layer out
+     towards the label side dissolves that seam and keeps the text side
+     clean, wherever the edge happens to fall for a given aspect. */
+  -webkit-mask-image:linear-gradient(90deg,transparent 4%,rgba(0,0,0,.45) 32%,#000 58%);
+          mask-image:linear-gradient(90deg,transparent 4%,rgba(0,0,0,.45) 32%,#000 58%);
+}
+.ideal-panel--2.is-contain .ideal-panel__art,
+.ideal-panel--4.is-contain .ideal-panel__art{
+  /* right-hand column: label is still on the left, so the fade direction
+     is the same — stated explicitly so it survives a layout change */
+  -webkit-mask-image:linear-gradient(90deg,transparent 4%,rgba(0,0,0,.45) 32%,#000 58%);
+          mask-image:linear-gradient(90deg,transparent 4%,rgba(0,0,0,.45) 32%,#000 58%);
+}
+@media(max-width:760px){
+  .ideal-panel.is-contain .ideal-panel__art{background-position:center}
+}
+
+/* Uploaded imagery is pushed back so white type stays legible, but only
+   so far: at brightness .5 x opacity .6 the image showed at ~30% and flat
+   graphics (symbol sets, line art) disappeared entirely. The wash above
+   already carries the text contrast — it is 93% opaque at the label edge —
+   so the artwork itself can afford to be much brighter. */
+.ideal-panel:not(.is-art) .ideal-panel__art{
+  filter:grayscale(.45) contrast(1.04) brightness(.78);opacity:.85;
+}
+/* Directional black/navy wash, mirrored on the right-hand column */
+.ideal-panel__wash{
+  position:absolute;inset:var(--edge);z-index:1;display:block;pointer-events:none;
+  clip-path:var(--shape);
+  /* The artwork darkens each photograph evenly and lets a vignette carry the
+     edges, rather than ramping hard across the card. */
+  background:
+    radial-gradient(105% 140% at 50% 45%, rgba(6,7,10,.22) 0%, rgba(2,3,6,.97) 100%),
+    linear-gradient(180deg, rgba(6,7,10,.58), rgba(6,7,10,.68));
+}
+.ideal-panel:hover{
+  --glow:#ff6f75;
+  filter:drop-shadow(0 0 18px rgba(232,50,58,.5));
+}
+.ideal-panel:hover::before{box-shadow:inset 0 0 46px rgba(200,35,42,.22)}
+.ideal-panel:hover .ideal-panel__art{opacity:1;transform:scale(1.05)}
+.ideal-panel:not(.is-art):hover .ideal-panel__art{opacity:1}
+.ideal-panel.is-open{--glow:#ff6f75}
+.ideal-panel.is-open::before{box-shadow:inset 0 0 52px rgba(200,35,42,.28)}
+
+/* --- panel content ----------------------------------------------------- */
+.ideal-panel__hit{
+  all:unset;box-sizing:border-box;position:relative;z-index:2;
+  display:flex;align-items:center;gap:clamp(16px,1.7vw,28px);
+  width:100%;height:100%;
+  padding:clamp(18px,2vw,30px) clamp(20px,2.4vw,38px);cursor:pointer;
+  /* Percentages of the card, matching the artwork. The hexagon covers the
+     inner ~30% of every card, so the right-hand column starts its content
+     well in from the edge; the left-hand column reads left-to-right into
+     the hexagon and needs no such allowance. */
+  padding-left:11%;
+  padding-right:30%;
+}
+.ideal-panel--2 .ideal-panel__hit,
+.ideal-panel--4 .ideal-panel__hit,
+.ideal-panel--6 .ideal-panel__hit{
+  padding-left:34%;
+  padding-right:clamp(20px,2.4vw,38px);
+}
+.ideal-panel__hit:focus-visible{outline:2px solid #e8323a;outline-offset:-8px}
+.ideal-panel__icon{
+  flex:0 0 auto;
+  width:clamp(44px,5.4vw,86px);height:clamp(44px,5.4vw,86px);
+  border-radius:50%;background:linear-gradient(160deg,#e5292f,#b81e25);color:#fff;
+  display:grid;place-items:center;
+  box-shadow:0 6px 16px rgba(0,0,0,.6), 0 0 0 3px rgba(255,255,255,.10),
+             inset 0 1px 0 rgba(255,255,255,.26);
+  transition:transform .35s ease,box-shadow .35s ease;
+}
+.ideal-panel__icon svg{width:54%;height:54%}
+.ideal-panel:hover .ideal-panel__icon,
+.ideal-panel.is-open .ideal-panel__icon{
+  transform:scale(1.07);box-shadow:0 8px 22px rgba(0,0,0,.6), 0 0 0 6px rgba(200,35,42,.16), inset 0 1px 0 rgba(255,255,255,.3);
+}
+
+.ideal-panel__label{
+  /* 1.54% of board width in the artwork */
+  font-size:clamp(.95rem,1.5vw,1.4rem);
+  font-weight:600;line-height:1.26;max-width:26ch;
+  text-transform:uppercase;letter-spacing:.6px;color:#fff;
+  text-shadow:0 2px 14px rgba(0,0,0,.8);
+}
+/* The red accent rule beneath every label */
+.ideal-panel__label::after{
+  content:"";display:block;width:clamp(64px,6vw,104px);height:2px;
+  margin-top:clamp(14px,1.5vw,24px);
+  background:linear-gradient(90deg,#e8323a,rgba(232,50,58,0));
+  transition:width .35s ease;
+}
+.ideal-panel:hover .ideal-panel__label::after,
+.ideal-panel.is-open .ideal-panel__label::after{width:clamp(96px,9vw,150px)}
+
+/* --- expanding summary -------------------------------------------------
+   0fr -> 1fr is the only way to animate to an unknown height without
+   measuring it in JS. It overlays the panel so the grid does not reflow. */
+.ideal-panel__body{
+  position:absolute;left:var(--edge);right:var(--edge);bottom:var(--edge);z-index:3;
+  display:grid;grid-template-rows:0fr;transition:grid-template-rows .42s ease;
+  background:linear-gradient(180deg,rgba(6,7,10,0),rgba(6,7,10,.96) 38%);
+}
+.ideal-panel__body>div{overflow:hidden}
+.ideal-panel.is-open .ideal-panel__body{grid-template-rows:1fr}
+.ideal-panel__body p{
+  margin:14px clamp(22px,2.6vw,42px) 8px;color:rgba(255,255,255,.85);
+  font-size:clamp(.82rem,.95vw,.94rem);line-height:1.6}
+.ideal-panel__body a{
+  display:inline-block;margin:0 clamp(22px,2.6vw,42px) 18px;
+  color:#ff9095;font-size:.85rem;font-weight:600;letter-spacing:.3px}
+.ideal-panel__body a:hover{color:#fff}
+
+/* --- hexagon core ------------------------------------------------------
+   30% of the board's width, aspect 1.214, centre 48% down — so it overhangs
+   the bottom of row 1 and the top of row 3 and covers the inner third of the
+   middle row, as the artwork does. Flat top and bottom edges with points at
+   left and right: the artwork's hexagon is the opposite orientation to a
+   pointy-top one. */
+.ideals-core{
+  --hex:polygon(22.5% 0,77.5% 0,100% 50%,77.5% 100%,22.5% 100%,0 50%);
+  position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);
+  z-index:5;width:30%;aspect-ratio:1.214;pointer-events:none;
+}
+/* A slightly larger hexagon behind the plate reads as a bright red rim —
+   clip-path crops outer shadows, so a border cannot do this job. */
+.ideals-core__ring{
+  position:absolute;inset:-2.4%;
+  clip-path:var(--hex);
+  background:#ff2f38;
+  filter:drop-shadow(0 0 30px rgba(232,50,58,.85));
+}
+/* ...and a dark hexagon just inside it leaves that rim as a hairline with a
+   black channel between it and the plate, the way the artwork separates the
+   hexagon from the cards it sits on. */
+.ideals-core__ring::before{
+  content:"";position:absolute;inset:2px;clip-path:var(--hex);background:#0a0c11;
+}
+.ideals-core__hex{
+  --hex:polygon(22.5% 0,77.5% 0,100% 50%,77.5% 100%,22.5% 100%,0 50%);
+  position:relative;width:100%;height:100%;
+  clip-path:var(--hex);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.18),transparent 42%),
+    linear-gradient(157deg,#ee363e 0%,#d0252d 40%,#8d191f 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:7% 17%;
+  filter:drop-shadow(0 0 36px rgba(232,50,58,.7));
+}
+/* The inner rim is a white hexagon with a marginally smaller red one over
+   it. A border cannot draw this: clipping a bordered box to a hexagon keeps
+   only the two vertical edges, because the box has no border running along
+   the diagonals, so the outline comes out broken. Both pseudo-elements sit
+   below the text, which is already at z-index 2. */
+.ideals-core__hex::before{
+  content:"";position:absolute;inset:4.5%;z-index:0;clip-path:var(--hex);
+  background:rgba(255,255,255,.62);
+}
+.ideals-core__hex::after{
+  content:"";position:absolute;inset:calc(4.5% + 1.5px);z-index:1;
+  clip-path:var(--hex);pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.18),transparent 42%),
+    linear-gradient(157deg,#ee363e 0%,#d0252d 40%,#8d191f 100%);
+}
+.ideals-core__dot{
+  position:absolute;top:9%;left:50%;transform:translateX(-50%);
+  width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.9);z-index:2}
+.ideals-core__kicker{
+  position:relative;z-index:2;
+  font-size:clamp(.66rem,2.15vw,1.9rem);letter-spacing:1.2px;text-transform:uppercase;
+  line-height:1.12;max-width:10ch;opacity:.96}
+.ideals-core__name{
+  position:relative;z-index:2;
+  font-size:clamp(1.05rem,2.95vw,2.6rem);font-weight:700;line-height:1;
+  letter-spacing:.2px;text-transform:uppercase;margin-top:2px;
+  text-shadow:0 3px 16px rgba(0,0,0,.42)}
+.ideals-core__mark{
+  position:relative;z-index:2;width:clamp(30px,5.3vw,80px);height:auto;
+  margin-top:clamp(8px,1.5vw,22px);opacity:.96}
+
+.ideals-core__star{
+  position:absolute;top:50%;width:14px;height:14px;transform:translateY(-50%);
+  background:#e8323a;opacity:.95;
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  filter:drop-shadow(0 0 7px rgba(232,50,58,.9));
+}
+.ideals-core__star--l{left:5%}
+.ideals-core__star--r{right:5%}
+
+/* --- tablet: same composition, scaled ----------------------------------- */
+@media(max-width:1100px){
+  .ideals-board{gap:7px}
+  .ideal-panel__label{max-width:15ch}
+  .ideals-core__star{display:none}
+}
+
+/* --- mobile: vertical stack, hexagon kept above it ---------------------- */
+@media(max-width:760px){
+  .ideals-board{
+    display:flex;flex-direction:column;gap:10px;
+    width:min(100% - 24px,560px);
+  }
+  .ideal-panel{--cut:18px;order:2;aspect-ratio:auto}
+  .ideal-panel__hit{height:auto;min-height:104px;padding:18px 22px}
+  .ideal-panel__hit,
+  .ideal-panel--2 .ideal-panel__hit,
+  .ideal-panel--4 .ideal-panel__hit,
+  .ideal-panel--6 .ideal-panel__hit{padding-left:22px}
+  .ideal-panel__label{max-width:none;font-size:1rem}
+  /* relative, not static: the ring behind the plate is absolutely
+     positioned with inset:-2.6%. With the core static it resolved against
+     .ideals-board instead and blew up to 385x977, covering the whole
+     stacked board. relative keeps the core in flow and gives the ring
+     something to anchor to; left/top are cleared because the desktop rule
+     sets them for its absolute placement. */
+  .ideals-core{
+    position:relative;left:auto;top:auto;transform:none;order:1;
+    width:min(232px,60vw);margin:0 auto clamp(16px,4vw,26px);pointer-events:auto}
+  .ideal-panel__wash{
+    background:linear-gradient(100deg,rgba(6,7,10,.96) 0%,rgba(8,10,15,.84) 52%,rgba(10,13,19,.5) 100%)!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .ideal-panel__body,.ideal-panel__icon,.ideal-panel__label::after,.ideal-panel__art{transition:none}
+}
+
+/* --- ideals.php rows ---------------------------------------------------- */
+.ideal-row{display:grid;gap:18px;padding:34px 0;border-bottom:1px solid var(--line)}
+@media(min-width:800px){.ideal-row{grid-template-columns:110px 1fr;gap:36px}}
+.ideal-row:last-child{border-bottom:0}
+.ideal-row .num{font-size:3.4rem;line-height:.9;font-weight:700;color:var(--red);opacity:.35}
+.ideal-row h2{font-size:clamp(1.2rem,2.4vw,1.6rem)}
+.ideal-row .summary{font-size:1.05rem;color:var(--muted)}
+
+/* ---------------------------------------------------------------- page banner */
+.page-banner{background:var(--red-deep) center/cover no-repeat;color:#fff;padding:clamp(46px,7vw,78px) 0;
+  position:relative;text-align:center}
+.page-banner::after{content:"";position:absolute;inset:0;background:rgba(40,4,4,.5)}
+.page-banner .wrap{position:relative;z-index:2}
+.page-banner h1{font-size:clamp(1.7rem,4vw,2.6rem);margin:0}
+.page-banner .lede{margin:12px auto 0;max-width:56ch;opacity:.94}
+.crumbs{font-size:.84rem;opacity:.9;margin-top:10px}
+.crumbs a{color:#ffd7d7}
+
+/* ---------------------------------------------------------------- symbol band */
+.symbol-band{background:var(--paper);border-block:1px solid var(--line);padding:38px 0}
+.symbol-band .wrap{display:flex;gap:clamp(20px,4vw,48px);align-items:center;justify-content:center;
+  flex-wrap:wrap;text-align:left}
+.symbol-band img{width:clamp(120px,15vw,168px);flex:0 0 auto}
+.symbol-band .txt{max-width:44ch}
+.symbol-band h3{font-size:1.15rem;margin-bottom:.35em}
+.symbol-band p{margin:0;color:var(--muted);font-size:.93rem}
+.symbol-band .te{display:block;color:var(--red-mark);font-weight:600;margin-top:6px}
+
+/* ---------------------------------------------------------------- pagination */
+.pager{display:flex;gap:8px;justify-content:center;margin-top:38px;flex-wrap:wrap;list-style:none;padding:0}
+.pager a,.pager span{display:inline-block;padding:9px 15px;border:1px solid var(--line);border-radius:8px;
+  font-size:.88rem;color:var(--ink);background:#fff}
+.pager a:hover{border-color:var(--red);color:var(--red);text-decoration:none}
+.pager .on{background:var(--red);color:#fff;border-color:var(--red)}
+.pager .off{opacity:.45;pointer-events:none}
+
+/* ---------------------------------------------------------------- prose */
+.prose{max-width:72ch}
+.prose h2{font-size:1.5rem;margin-top:1.4em}
+.prose h3{font-size:1.2rem;margin-top:1.2em}
+.prose ul,.prose ol{padding-left:1.3em}
+.prose li{margin-bottom:.4em}
+.prose img{border-radius:var(--radius);margin-block:1.2em}
+.prose blockquote{margin:1.5em 0;padding:.4em 0 .4em 1.2em;border-left:4px solid var(--red);
+  color:var(--muted);font-style:italic}
+.prose table{width:100%;border-collapse:collapse;margin-block:1.2em}
+.prose th,.prose td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+.prose th{background:var(--paper)}
+.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* ---------------------------------------------------------------- forms */
+.form{max-width:780px}
+.form__grid{display:grid;gap:18px}
+@media(min-width:640px){.form__grid--2{grid-template-columns:repeat(2,1fr)}}
+.field{display:flex;flex-direction:column;gap:7px}
+.field__label{font-weight:600;font-size:.88rem}
+.field__hint{font-size:.8rem;color:var(--muted)}
+.field__req{color:var(--red);font-weight:700}
+.field__opt{color:var(--muted);font-weight:400}
+
+/* --- membership fee panel ----------------------------------------------
+   The account details are the part a visitor copies into a banking app, so
+   they are set apart from the form's own fields rather than sitting among
+   them, and the values are laid out on a fixed column with tabular figures.
+   A BSB misread by one digit is money gone. */
+.pay__intro{margin:8px 0 16px;color:var(--muted);max-width:62ch}
+.pay__panel{
+  border:1px solid var(--line);border-left:4px solid var(--red);
+  border-radius:var(--radius);background:var(--paper);
+  padding:clamp(16px,2.2vw,26px);margin-bottom:26px}
+.pay__h{font-size:.78rem;letter-spacing:1.6px;text-transform:uppercase;
+  color:var(--red);margin:0 0 10px;font-weight:700}
+.pay__h--own{margin:0 0 12px}
+.pay__list{margin:0 0 20px;display:grid;gap:7px}
+.pay__list:last-of-type{margin-bottom:0}
+.pay__list>div{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.pay__list dt{flex:0 0 clamp(116px,26%,190px);color:var(--muted);font-size:.86rem}
+.pay__list dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums;
+  letter-spacing:.3px;overflow-wrap:anywhere}
+.pay__check,.pay__note{font-size:.84rem;color:var(--muted);margin:14px 0 0;max-width:62ch}
+.input,.select,.textarea{width:100%;padding:12px 14px;background:#fff;border:1px solid #d9cfcf;
+  border-radius:10px;color:var(--ink);transition:.15s}
+.input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--red);
+  box-shadow:0 0 0 3px rgba(200,35,42,.15)}
+.textarea{min-height:8rem;resize:vertical}
+.field--error .input,.field--error .select,.field--error .textarea{border-color:var(--red);border-width:2px}
+.field__error{color:var(--red);font-size:.84rem;font-weight:600;margin:0}
+.checkbox{display:grid;grid-template-columns:1.2rem 1fr;gap:12px;align-items:start}
+.checkbox input{width:1.2rem;height:1.2rem;margin-top:.25rem;accent-color:var(--red)}
+.checkbox label{font-size:.9rem;line-height:1.55}
+.form__actions{margin-top:26px;display:flex;gap:12px;flex-wrap:wrap}
+
+.error-summary{border:2px solid var(--red);background:#fdf2f2;border-radius:var(--radius);
+  padding:20px 22px;margin-bottom:26px}
+.error-summary h2{font-size:1.1rem;color:var(--red);margin-bottom:.4em}
+.error-summary ul{margin:0;padding-left:1.2em}
+.error-summary a{color:var(--red)}
+
+.flash{padding:14px 0;font-weight:500}
+.flash--success{background:#e8f5e9;color:#1b5e20;border-bottom:2px solid #2e7d32}
+.flash--error{background:#fdf2f2;color:#8e1218;border-bottom:2px solid var(--red)}
+.flash--info{background:var(--paper);color:var(--ink);border-bottom:2px solid var(--line)}
+
+.notice{border-left:4px solid var(--red);background:var(--paper);padding:18px 20px;
+  border-radius:0 var(--radius) var(--radius) 0;margin-bottom:26px}
+.notice p:last-child{margin-bottom:0}
+
+.empty{background:var(--paper);border:1px dashed var(--line);border-radius:var(--radius);
+  padding:46px 24px;text-align:center;color:var(--muted)}
+
+/* ---------------------------------------------------------------- footer */
+.site-footer{background:var(--ink);color:#c9c1bf;padding:56px 0 0;font-size:.9rem}
+.f-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.2fr;gap:32px}
+@media(max-width:860px){.f-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.f-grid{grid-template-columns:1fr}}
+.site-footer h4{color:#fff;font-size:.82rem;letter-spacing:2.2px;text-transform:uppercase;margin-bottom:16px}
+.site-footer a{color:#c9c1bf}
+.site-footer a:hover{color:#fff}
+.site-footer ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.f-brand{display:flex;align-items:center;gap:13px;margin-bottom:18px}
+.f-brand img{width:54px;height:54px;flex:none}
+/* 1.02rem, not 1.24: the wordmark now carries three words, and at the old
+   size it broke after "MELBOURNE" and left "INC" stranded on a line of its
+   own. The footer column is ~279px wide once the emblem is taken off. */
+.f-brand strong{display:block;color:#fff;font-size:.96rem;line-height:1.15;letter-spacing:.6px;
+  text-transform:uppercase;
+  /* Where the column is too narrow for one line, balance the two rather than
+     letting the last word fall on its own: "JANASENA / MELBOURNE INC" reads
+     as a name, "JANASENA MELBOURNE / INC" reads as a mistake. Falls back to
+     ordinary wrapping where text-wrap is unsupported. */
+  text-wrap:balance}
+.f-brand small{display:block;margin-top:3px;font-size:.66rem;letter-spacing:2.4px;
+  text-transform:uppercase;color:rgba(255,255,255,.66)}
+.f-symbol{display:flex;align-items:center;gap:14px;margin-top:18px}
+/* The social row, moved out of the black topbar.
+   Each mark is now the platform's own badge -- its tile, its colour, its
+   symbol -- so the shared .social ring is dropped: a border drawn round a
+   logo that already has its own edge reads as a box, not a button. */
+.f-social{margin-top:20px;gap:11px;flex-wrap:wrap}
+.f-social a{width:32px;height:32px;border:0;border-radius:0;
+  transition:transform .18s ease,filter .18s ease}
+.f-social a:hover{background:none;border:0;transform:translateY(-2px);
+  filter:brightness(1.08)}
+.f-social svg{width:32px;height:32px}
+.f-symbol img{width:66px;height:66px}
+.f-symbol span{font-size:.82rem;line-height:1.4;color:#a8a09e}
+.f-disclaimer{border-top:1px solid #2b2422;margin-top:44px;padding-top:18px;font-size:.82rem;color:#8d8482;
+  max-width:90ch}
+.f-bottom{border-top:1px solid #2b2422;margin-top:18px;padding:18px 0;font-size:.82rem;
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;color:#8d8482}
+
+/* ---------------------------------------------------------------- utilities */
+.center{text-align:center}
+.text-center{text-align:center}
+.muted{color:var(--muted)}
+.mb-0{margin-bottom:0}
+.mt-4{margin-top:1.5rem}
+.mt-6{margin-top:2.5rem}
+.stack>*+*{margin-top:1rem}
+.grid-2{display:grid;gap:28px}
+@media(min-width:860px){.grid-2{grid-template-columns:1fr 1fr}}
+
+@media print{
+  .topbar,.site-header,.site-footer,.burger,.lang-switch,.hero-dots{display:none!important}
+  body{background:#fff;color:#000}
+}
+
+/* ==========================================================================
+   MOTION LAYER
+   --------------------------------------------------------------------------
+   Everything below the fold is revealed by a CSS view timeline rather than a
+   scroll listener, so nothing depends on JavaScript having run in order to
+   become visible -- a browser without animation-timeline just gets the
+   finished state. The hero and page banner are time-based instead, because
+   they are already on screen and there is no scrolling to drive them.
+
+   Two rules stop this fighting itself:
+
+     1. Reveals go on the OUTER element of a component and hover effects on
+        the inner ones. Where both must sit on the same element, hover uses
+        the independent `translate` / `scale` properties -- a reveal fills
+        `both`, which pins `transform` for good, so a hover written against
+        `transform` would silently never apply.
+
+     2. Nothing moves horizontally. An outward slide on a full-width row
+        widens the document and raises a horizontal scrollbar.
+
+   Reduced motion needs no per-selector reset: the reveals sit inside a
+   `prefers-reduced-motion: no-preference` query, so they are never declared
+   at all. Only the hover movements have to be unwound, at the end.
+   ========================================================================== */
+
+@keyframes m-rise    {from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+@keyframes m-rise-sm {from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes m-pop     {from{opacity:0;transform:translateY(22px) scale(.965)}to{opacity:1;transform:none}}
+@keyframes m-fade    {from{opacity:0}to{opacity:1}}
+@keyframes m-zoom    {from{transform:scale(1.14)}to{transform:scale(1)}}
+@keyframes m-rule    {from{width:0}to{width:64px}}
+
+/* --- above the fold: time-based ---------------------------------------- */
+@media(prefers-reduced-motion:no-preference){
+  .hero .eyebrow,.hero h1,.hero .lede,.hero-actions,.hero-dots{
+    animation:m-rise .85s cubic-bezier(.22,.61,.36,1) both}
+  .hero .eyebrow{animation-delay:.06s}
+  .hero h1      {animation-delay:.17s}
+  .hero .lede   {animation-delay:.29s}
+  .hero-actions {animation-delay:.41s}
+  .hero-dots    {animation-delay:.58s}
+
+  .page-banner .crumbs{animation:m-rise-sm .7s cubic-bezier(.22,.61,.36,1) .04s both}
+  .page-banner h1     {animation:m-rise-sm .7s cubic-bezier(.22,.61,.36,1) .14s both}
+  .page-banner .lede  {animation:m-rise-sm .7s cubic-bezier(.22,.61,.36,1) .24s both}
+}
+
+/* --- below the fold: entry-triggered, time-based ------------------------
+   These used to be driven by view() timelines, which tie progress directly
+   to scroll offset -- so on a notched mouse wheel the reveal advances in
+   visible steps rather than gliding. They are now started by an
+   IntersectionObserver and played as ordinary timed animations, so each one
+   runs its own smooth curve however the visitor scrolls.
+
+   The hidden state keys off [data-reveal], an attribute only the script
+   ever writes. If the script is blocked or fails, nothing carries the
+   attribute and every element simply stays visible -- the same safeguard
+   the view() version had, kept deliberately. Reduced motion is handled by
+   the script declining to mark anything at all.
+
+   Horizontal slides are contained by `overflow-x:clip` on the section.
+   `clip` rather than `hidden` because only the horizontal axis may be
+   clipped -- the ideals hexagon deliberately overflows its band vertically. */
+.section,.ideals-band{overflow-x:clip}
+
+[data-reveal]{opacity:0}
+[data-reveal].is-in{
+  animation-name:var(--rev);
+  animation-duration:var(--rev-dur,.8s);
+  animation-timing-function:cubic-bezier(.16,.84,.44,1);
+  animation-fill-mode:both;
+  animation-delay:calc(var(--i,0) * var(--rev-step,95ms));
+}
+
+@keyframes r-up{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+@keyframes r-fade{from{opacity:0}to{opacity:1}}
+
+/* a touch of overshoot -- it reads as spring rather than a slide */
+@keyframes r-pop{
+  from{opacity:0;transform:translateY(26px) scale(.9)}
+  62%{opacity:1;transform:translateY(-5px) scale(1.035)}
+  to{opacity:1;transform:none}
+}
+/* headings uncover themselves from the top down */
+@keyframes r-wipe{
+  from{opacity:0;clip-path:inset(0 0 100% 0);transform:translateY(14px)}
+  to{opacity:1;clip-path:inset(0 0 0 0);transform:none}
+}
+/* horizontal rows arrive from alternating sides, with a hint of tilt */
+@keyframes r-left{
+  from{opacity:0;transform:translateX(-72px) rotate(-1.4deg)}
+  to{opacity:1;transform:none}
+}
+@keyframes r-right{
+  from{opacity:0;transform:translateX(72px) rotate(1.4deg)}
+  to{opacity:1;transform:none}
+}
+/* cards tip up out of the page */
+@keyframes r-card{
+  from{opacity:0;transform:perspective(1100px) rotateX(13deg) translateY(42px) scale(.96)}
+  to{opacity:1;transform:none}
+}
+@keyframes r-frame{from{opacity:0;transform:translateY(38px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes r-tile{from{transform:scale(.9)}to{transform:none}}
+@keyframes r-curtain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@keyframes r-rule{from{width:0}to{width:64px}}
+/* the ideals board: panels tip in around a hexagon that lands with a snap */
+@keyframes r-panel{
+  from{opacity:0;transform:perspective(1200px) rotateX(17deg) translateY(48px) scale(.93)}
+  to{opacity:1;transform:none}
+}
+@keyframes r-core{
+  from{opacity:0;transform:translate(-50%,-50%) scale(.4) rotate(-16deg)}
+  62%{opacity:1;transform:translate(-50%,-50%) scale(1.09) rotate(3deg)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0deg)}
+}
+/* below 760px the hexagon is in flow, so it must not carry the centring */
+@keyframes r-core-flow{
+  from{opacity:0;transform:scale(.4) rotate(-16deg)}
+  62%{opacity:1;transform:scale(1.09) rotate(3deg)}
+  to{opacity:1;transform:none}
+}
+
+[data-reveal="up"]    {--rev:r-up}
+[data-reveal="fade"]  {--rev:r-fade;--rev-dur:.95s}
+[data-reveal="pop"]   {--rev:r-pop;--rev-dur:.85s}
+[data-reveal="wipe"]  {--rev:r-wipe;--rev-dur:.9s}
+[data-reveal="left"]  {--rev:r-left;--rev-dur:.85s}
+[data-reveal="right"] {--rev:r-right;--rev-dur:.85s}
+[data-reveal="card"]  {--rev:r-card;--rev-dur:.9s}
+[data-reveal="frame"] {--rev:r-frame;--rev-dur:.95s}
+[data-reveal="panel"] {--rev:r-panel;--rev-dur:.95s;--rev-step:80ms}
+[data-reveal="core"]  {--rev:r-core;--rev-dur:1.1s}
+/* r-rule animates width only, so it must opt out of the shared hidden
+   state -- otherwise it draws itself out while still fully transparent. */
+[data-reveal="rule"]  {--rev:r-rule;--rev-dur:.7s;--i:2;opacity:1}
+@media(max-width:760px){[data-reveal="core"]{--rev:r-core-flow}}
+
+/* Tiles are uncovered by a red curtain wiping off to the left rather than
+   by fading, so a wall of thumbnails arrives as a sweep. */
+[data-reveal="tile"]{--rev:r-tile;--rev-dur:.85s;--rev-step:70ms;opacity:1}
+[data-reveal="tile"]::before{
+  content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(120deg,var(--red-mark),var(--red-dark));
+  transform-origin:right center;
+}
+[data-reveal="tile"].is-in::before{
+  animation:r-curtain .8s cubic-bezier(.16,.84,.44,1) both;
+  animation-delay:calc(var(--i,0) * var(--rev-step,70ms));
+}
+
+/* Shorter travel on small screens: a 72px slide is most of a phone. */
+@media(max-width:640px){
+  @keyframes r-left {from{opacity:0;transform:translateX(-34px)}to{opacity:1;transform:none}}
+  @keyframes r-right{from{opacity:0;transform:translateX(34px)}to{opacity:1;transform:none}}
+  [data-reveal="card"],[data-reveal="panel"]{--rev:r-up}
+}
+
+/* --- hover --------------------------------------------------------------
+   `translate` / `scale`, not `transform`, on anything that also carries a
+   reveal. See the note at the top of this layer. */
+.btn{transition:translate .2s ease,box-shadow .2s ease,background-color .2s ease,
+  color .2s ease,border-color .2s ease}
+.btn:hover{translate:0 -2px;box-shadow:0 10px 24px rgba(0,0,0,.18)}
+.btn:active{translate:0 0;box-shadow:none}
+
+.card,.member{transition:translate .25s ease,box-shadow .25s ease,border-color .25s ease}
+.card:hover,.member:hover{translate:0 -6px;border-color:#efc7c9}
+.member .ph img,.leader .ph img{transition:scale .5s ease}
+.member:hover .ph img,.leader:hover .ph img{scale:1.06}
+
+.ann{transition:translate .22s ease,box-shadow .22s ease,
+  border-left-color .22s ease,background-color .22s ease}
+.ann:hover{translate:0 -3px;border-left-color:var(--red-cta);background:#fffafa}
+
+.gal-item,.album-more{transition:translate .25s ease,box-shadow .25s ease}
+.gal-item:hover,.album-more:hover{translate:0 -3px;box-shadow:var(--shadow-lg)}
+
+.stat{transition:translate .25s ease,border-color .25s ease,box-shadow .25s ease}
+.stat:hover{translate:0 -4px;border-color:var(--red);box-shadow:0 12px 26px rgba(200,35,42,.15)}
+.stat b{transition:scale .25s ease}
+.stat:hover b{scale:1.06}
+
+.split .media img{transition:scale .6s ease}
+.split .media:hover img{scale:1.05}
+
+.album-tabs a{transition:translate .2s ease,border-color .2s ease,
+  color .2s ease,background-color .2s ease}
+.album-tabs a:hover{translate:0 -2px}
+
+.video-embed__play{transition:scale .25s ease}
+.video-embed__facade:hover .video-embed__play{scale:1.12}
+
+.site-footer .f-grid a{transition:translate .2s ease,color .2s ease}
+.site-footer .f-grid a:hover{translate:3px 0}
+
+/* Desktop nav: a rule sweeps in under the label. Excluded on the Join Us
+   pill, where a white bar on white would be invisible anyway. */
+@media(min-width:1161px){
+  .nav>a,.has-sub>button{position:relative}
+  .nav>a:not(.btn-cta)::after,.has-sub>button::after{
+    content:"";position:absolute;left:13px;right:13px;bottom:4px;height:2px;
+    background:#fff;border-radius:2px;
+    transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+  .nav>a:not(.btn-cta):hover::after,.has-sub>button:hover::after{transform:scaleX(1)}
+  .nav>a[aria-current="page"]::after{transform:scaleX(1);background:rgba(255,255,255,.5)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .btn:hover,.btn:active,.card:hover,.member:hover,.ann:hover,.gal-item:hover,
+  .album-more:hover,.stat:hover,.album-tabs a:hover,.site-footer .f-grid a:hover{
+    translate:none}
+  .member:hover .ph img,.leader:hover .ph img,.stat:hover b,
+  .split .media:hover img,.video-embed__facade:hover .video-embed__play{scale:none}
+  .nav>a:not(.btn-cta):hover::after,.has-sub>button:hover::after{transform:scaleX(0)}
+}
