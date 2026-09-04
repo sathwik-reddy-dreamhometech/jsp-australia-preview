@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Janasena Australia — Announcements</title>
+    <title>Janasena Melbourne Australia — Announcements</title>
     <link>http://localhost/announcements.php</link>
-    <description>News and notices from Janasena Australia.</description>
+    <description>News and notices from Janasena Melbourne Australia.</description>
     <language>en-AU</language>
-    <lastBuildDate>Fri, 04 Sep 2026 12:21:03 +1000</lastBuildDate>
+    <lastBuildDate>Fri, 04 Sep 2026 20:46:22 +1000</lastBuildDate>
     <atom:link href="http://localhost/feed.php" rel="self" type="application/rss+xml"/>
     <item>
       <title>Newly elected Executive Committee</title>
