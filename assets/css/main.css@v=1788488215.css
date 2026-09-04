@@ -443,6 +443,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .ann h3 a{color:var(--ink)}
 .ann h3 a:hover{color:var(--red)}
 .ann p{margin:0;color:var(--muted);font-size:.93rem}
+.ann .thumb{flex:0 0 104px;margin-left:auto;align-self:center}
+.ann .thumb img{width:104px;height:78px;object-fit:cover;border-radius:8px;display:block}
+@media (max-width:560px){.ann .thumb{display:none}}
 .pin{display:inline-block;background:var(--ink);color:#fff;font-size:.66rem;font-weight:700;
   letter-spacing:1.2px;padding:3px 9px;border-radius:4px;margin-left:8px;vertical-align:2px}
 

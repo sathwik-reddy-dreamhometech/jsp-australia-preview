@@ -5,7 +5,7 @@
     <link>http://localhost/announcements.php</link>
     <description>News and notices from Janasena Australia.</description>
     <language>en-AU</language>
-    <lastBuildDate>Fri, 04 Sep 2026 12:03:21 +1000</lastBuildDate>
+    <lastBuildDate>Fri, 04 Sep 2026 12:17:20 +1000</lastBuildDate>
     <atom:link href="http://localhost/feed.php" rel="self" type="application/rss+xml"/>
     <item>
       <title>Newly elected Executive Committee</title>
